@@ -14,7 +14,7 @@ import { PlusCircle, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-const timeSlots = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, '0')}:00`); // 00:00 to 23:00
+const timeSlots = Array.from({ length: 19 }, (_, i) => `${String(i + 5).padStart(2, '0')}:00`); // 05:00 to 23:00
 
 function TimetableForm({ entry, onSave, onDelete }: { entry?: Partial<TimetableEntry> | null, onSave: (entry: Partial<TimetableEntry>) => void, onDelete?: (id: string) => void }) {
     const [subject, setSubject] = useState(entry?.subject || '');
@@ -84,13 +84,14 @@ export default function TimetablePage() {
 
     const handleSave = (entryData: Partial<TimetableEntry>) => {
         let updatedEntries;
+        const newEntryData = { ...selectedEntry, ...entryData };
         
-        if (entryData.id) { // Editing existing entry
-            updatedEntries = entries.map(e => e.id === entryData.id ? { ...e, ...entryData } as TimetableEntry : e);
+        if (newEntryData.id) { // Editing existing entry
+            updatedEntries = entries.map(e => e.id === newEntryData.id ? { ...e, ...newEntryData } as TimetableEntry : e);
             toast({ title: "Success", description: "Timetable entry updated." });
         } else { // Creating new entry
             const newEntry: TimetableEntry = {
-                 ...entryData,
+                 ...newEntryData,
                  id: crypto.randomUUID(),
             } as TimetableEntry;
             updatedEntries = [...entries, newEntry];
