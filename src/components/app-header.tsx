@@ -85,15 +85,15 @@ export function AppHeader() {
 
       <h1 className="text-xl font-semibold md:text-2xl font-headline hidden sm:block">{pageTitle}</h1>
 
-      <div className="flex w-full items-center gap-2 md:ml-auto md:gap-2 lg:gap-4">
+      <div className="flex w-full items-center justify-end gap-2 md:ml-auto md:gap-4">
         <WorldClock />
-        <form onSubmit={handleSearchSubmit} className="ml-auto flex items-center gap-4">
-          <div className="relative flex-1 sm:flex-initial">
+        <form onSubmit={handleSearchSubmit} className="flex-1 md:flex-initial">
+          <div className="relative">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
               name="search"
-              placeholder="Search everything..."
+              placeholder="Search..."
               className="pl-8 sm:w-[200px] md:w-[200px] lg:w-[300px]"
               onFocus={handleSearchFocus}
             />
