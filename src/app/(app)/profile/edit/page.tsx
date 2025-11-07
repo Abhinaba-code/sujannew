@@ -71,7 +71,7 @@ export default function EditProfilePage() {
     <div className="max-w-3xl mx-auto">
         <Card>
             <CardHeader>
-                <CardTitle>{isInitialSetup ? "Welcome! Complete Your Profile" : "Update Details Section"}</CardTitle>
+                <CardTitle>{isInitialSetup ? "Welcome! Complete Your Profile" : "Update Your Details"}</CardTitle>
                 <CardDescription>
                     {isInitialSetup 
                         ? "Please fill in all your details to get started." 
