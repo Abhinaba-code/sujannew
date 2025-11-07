@@ -30,14 +30,13 @@ type Category = {
     name: string;
 }
 
-type Difficulty = 'easy' | 'medium' | 'hard';
-
-type ClassLevel = 'elementary' | 'middle' | 'high' | 'university';
+type ApiDifficulty = 'easy' | 'medium' | 'hard';
+type DifficultySetting = 'super-easy' | 'easy' | 'medium' | 'hard' | 'super-hard';
 
 type QuizSettings = {
     amount: number;
     category: string;
-    classLevel: ClassLevel;
+    difficulty: DifficultySetting;
     timeLimit: number; // in seconds, 0 for no limit
 }
 
@@ -51,11 +50,12 @@ function decodeHtml(html: string) {
     return txt.value;
 }
 
-const classLevelToDifficulty: Record<ClassLevel, Difficulty> = {
-    elementary: 'easy',
-    middle: 'medium',
-    high: 'hard',
-    university: 'hard',
+const difficultySettingToApi: Record<DifficultySetting, ApiDifficulty> = {
+    'super-easy': 'easy',
+    'easy': 'easy',
+    'medium': 'medium',
+    'hard': 'medium',
+    'super-hard': 'hard',
 };
 
 
@@ -74,7 +74,7 @@ export default function QuizzesPage() {
   const [settings, setSettings] = useState<QuizSettings>({
       amount: 10,
       category: 'any',
-      classLevel: 'middle',
+      difficulty: 'medium',
       timeLimit: 0,
   });
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
@@ -112,12 +112,12 @@ export default function QuizzesPage() {
     setIsLoading(true);
     setError(null);
     
-    const { amount, category, classLevel, timeLimit } = settings;
-    const difficulty = classLevelToDifficulty[classLevel];
+    const { amount, category, difficulty, timeLimit } = settings;
+    const apiDifficulty = difficultySettingToApi[difficulty];
     const categoryParam = category === 'any' ? '' : `&category=${category}`;
 
     try {
-      const response = await fetch(`https://opentdb.com/api.php?amount=${amount}${categoryParam}&difficulty=${difficulty}&type=multiple`);
+      const response = await fetch(`https://opentdb.com/api.php?amount=${amount}${categoryParam}&difficulty=${apiDifficulty}&type=multiple`);
       if (!response.ok) {
         throw new Error('Failed to fetch questions from the trivia API.');
       }
@@ -216,14 +216,15 @@ export default function QuizzesPage() {
                     </Select>
                 </div>
                  <div className="space-y-2">
-                    <Label htmlFor="class-level">Class Level (sets difficulty)</Label>
-                     <Select value={settings.classLevel} onValueChange={(val) => setSettings(s => ({...s, classLevel: val as ClassLevel}))}>
-                        <SelectTrigger id="class-level"><SelectValue /></SelectTrigger>
+                    <Label htmlFor="difficulty">Difficulty</Label>
+                     <Select value={settings.difficulty} onValueChange={(val) => setSettings(s => ({...s, difficulty: val as DifficultySetting}))}>
+                        <SelectTrigger id="difficulty"><SelectValue /></SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="elementary">Elementary (Easy)</SelectItem>
-                            <SelectItem value="middle">Middle School (Medium)</SelectItem>
-                            <SelectItem value="high">High School (Hard)</SelectItem>
-                            <SelectItem value="university">University (Hard)</SelectItem>
+                            <SelectItem value="super-easy">Super Easy</SelectItem>
+                            <SelectItem value="easy">Easy</SelectItem>
+                            <SelectItem value="medium">Medium</SelectItem>
+                            <SelectItem value="hard">Hard</SelectItem>
+                            <SelectItem value="super-hard">Super Hard</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
