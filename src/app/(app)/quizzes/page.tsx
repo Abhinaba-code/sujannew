@@ -421,7 +421,7 @@ export default function QuizzesPage() {
       <CardFooter className="justify-between">
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant="ghost">Quit Quiz</Button>
+              <Button variant="destructive" className="transition-transform hover:scale-105">Quit Quiz</Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
