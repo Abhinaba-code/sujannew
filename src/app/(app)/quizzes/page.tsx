@@ -1,6 +1,8 @@
+
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useAuth } from '@/hooks/use-auth';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Loader2, RefreshCw, CheckCircle, XCircle } from 'lucide-react';
@@ -21,6 +23,24 @@ type QuizApiResponse = {
   results: Question[];
 };
 
+// Map subjects to OpenTDB category IDs
+const categoryMap: { [key: string]: number } = {
+    'history': 23,
+    'geography': 22,
+    'science': 17,
+    'computers': 18,
+    'math': 19,
+    'mythology': 20,
+    'sports': 21,
+    'art': 25,
+    'animals': 27,
+    'general knowledge': 9,
+    'physics': 17, // Science & Nature
+    'chemistry': 17,
+    'biology': 17,
+};
+
+
 // Function to decode HTML entities
 function decodeHtml(html: string) {
     if (typeof window === 'undefined') {
@@ -32,6 +52,7 @@ function decodeHtml(html: string) {
 }
 
 export default function QuizzesPage() {
+  const { user } = useAuth();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -40,19 +61,40 @@ export default function QuizzesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchQuestions = async () => {
+  const fetchQuestions = useCallback(async () => {
     setIsLoading(true);
     setError(null);
+    
+    // Personalize quiz based on user data
+    const subject = user?.data.favoriteSubject?.toLowerCase() || '';
+    const age = user?.data.age ? parseInt(user?.data.age) : 0;
+
+    let categoryId = categoryMap[subject] || 9; // Default to General Knowledge
+    let difficulty: 'easy' | 'medium' | 'hard' = 'medium';
+
+    if (age > 0) {
+        if (age < 12) difficulty = 'easy';
+        else if (age > 18) difficulty = 'hard';
+    }
+
     try {
-      const response = await fetch('https://opentdb.com/api.php?amount=10&category=18&difficulty=easy&type=multiple');
+      const response = await fetch(`https://opentdb.com/api.php?amount=10&category=${categoryId}&difficulty=${difficulty}&type=multiple`);
       if (!response.ok) {
         throw new Error('Failed to fetch questions from the trivia API.');
       }
       const data: QuizApiResponse = await response.json();
       if (data.response_code !== 0) {
-        throw new Error('The trivia API could not return questions.');
+         // If API can't return questions for the specific category, fallback to General Knowledge
+         const fallbackResponse = await fetch('https://opentdb.com/api.php?amount=10&type=multiple');
+         const fallbackData: QuizApiResponse = await fallbackResponse.json();
+         if(fallbackData.response_code !== 0) {
+            throw new Error('The trivia API could not return any questions.');
+         }
+         setQuestions(fallbackData.results.map(q => ({...q, question: decodeHtml(q.question)})));
+      } else {
+        setQuestions(data.results.map(q => ({...q, question: decodeHtml(q.question)})));
       }
-      setQuestions(data.results.map(q => ({...q, question: decodeHtml(q.question)})));
+
       setCurrentQuestionIndex(0);
       setScore(0);
       setSelectedAnswer(null);
@@ -62,11 +104,13 @@ export default function QuizzesPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
-    fetchQuestions();
-  }, []);
+    if (user) {
+        fetchQuestions();
+    }
+  }, [fetchQuestions, user]);
 
   const currentQuestion = questions[currentQuestionIndex];
   
@@ -95,7 +139,7 @@ export default function QuizzesPage() {
   
   const progress = questions.length > 0 ? ((currentQuestionIndex + 1) / questions.length) * 100 : 0;
 
-  if (isLoading) {
+  if (isLoading || !user) {
     return (
       <div className="flex items-center justify-center h-full">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
@@ -133,13 +177,13 @@ export default function QuizzesPage() {
   }
 
   if (!currentQuestion) {
-    return <div className="text-center">No questions available.</div>;
+    return <div className="text-center">No questions available. Try fetching again.</div>;
   }
 
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>Computer Science Quiz</CardTitle>
+        <CardTitle>Personalized Quiz</CardTitle>
         <CardDescription>Category: {decodeHtml(currentQuestion.category)} | Difficulty: {currentQuestion.difficulty}</CardDescription>
         <div className="flex items-center pt-2">
             <span className="text-sm text-muted-foreground mr-2">Question {currentQuestionIndex + 1} of {questions.length}</span>
