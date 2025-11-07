@@ -5,7 +5,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useAuth } from '@/hooks/use-auth';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, RefreshCw, CheckCircle, XCircle } from 'lucide-react';
+import { Loader2, RefreshCw, CheckCircle, XCircle, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -38,6 +38,7 @@ type QuizSettings = {
     amount: number;
     category: string;
     classLevel: ClassLevel;
+    timeLimit: number; // in seconds, 0 for no limit
 }
 
 // Function to decode HTML entities
@@ -74,7 +75,9 @@ export default function QuizzesPage() {
       amount: 10,
       category: 'any',
       classLevel: 'middle',
+      timeLimit: 0,
   });
+  const [timeLeft, setTimeLeft] = useState<number | null>(null);
 
   useEffect(() => {
     async function fetchCategories() {
@@ -88,14 +91,28 @@ export default function QuizzesPage() {
     }
     fetchCategories();
   }, []);
+  
+  useEffect(() => {
+    if (quizState !== 'playing' || timeLeft === null) return;
+
+    if (timeLeft === 0) {
+        setQuizState('finished');
+        return;
+    }
+
+    const timer = setInterval(() => {
+        setTimeLeft(prev => (prev ? prev - 1 : 0));
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [quizState, timeLeft]);
 
 
   const fetchQuestions = useCallback(async () => {
     setIsLoading(true);
     setError(null);
-    setQuizState('playing');
     
-    const { amount, category, classLevel } = settings;
+    const { amount, category, classLevel, timeLimit } = settings;
     const difficulty = classLevelToDifficulty[classLevel];
     const categoryParam = category === 'any' ? '' : `&category=${category}`;
 
@@ -110,11 +127,17 @@ export default function QuizzesPage() {
       } else {
         setQuestions(data.results.map(q => ({...q, question: decodeHtml(q.question)})));
       }
-
+      
+      setQuizState('playing');
       setCurrentQuestionIndex(0);
       setScore(0);
       setSelectedAnswer(null);
       setIsAnswered(false);
+      if (timeLimit > 0) {
+        setTimeLeft(timeLimit);
+      } else {
+        setTimeLeft(null);
+      }
     } catch (err: any) {
       setError(err.message);
       setQuizState('settings');
@@ -156,9 +179,16 @@ export default function QuizzesPage() {
     setQuizState('settings');
     setQuestions([]);
     setError(null);
+    setTimeLeft(null);
   };
   
   const progress = questions.length > 0 ? ((currentQuestionIndex + 1) / questions.length) * 100 : 0;
+  
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+  };
 
   if (quizState === 'settings' || isLoading) {
     return (
@@ -209,6 +239,18 @@ export default function QuizzesPage() {
                         </SelectContent>
                     </Select>
                 </div>
+                <div className="space-y-2">
+                    <Label htmlFor="time-limit">Time Limit</Label>
+                    <Select value={String(settings.timeLimit)} onValueChange={(val) => setSettings(s => ({...s, timeLimit: Number(val)}))}>
+                        <SelectTrigger id="time-limit"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="0">No Limit</SelectItem>
+                            <SelectItem value="60">1 Minute</SelectItem>
+                            <SelectItem value="300">5 Minutes</SelectItem>
+                            <SelectItem value="600">10 Minutes</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
             </CardContent>
             <CardFooter>
                  <Button onClick={fetchQuestions} disabled={isLoading} className="w-full">
@@ -224,6 +266,7 @@ export default function QuizzesPage() {
       <Card className="max-w-2xl mx-auto text-center">
         <CardHeader>
           <CardTitle>Quiz Complete!</CardTitle>
+          {timeLeft === 0 && <CardDescription>Time's up!</CardDescription>}
         </CardHeader>
         <CardContent>
           <p className="text-4xl font-bold">Your Score: {score} / {questions.length}</p>
@@ -244,8 +287,18 @@ export default function QuizzesPage() {
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>Personalized Quiz</CardTitle>
-        <CardDescription>Category: {decodeHtml(currentQuestion.category)} | Difficulty: {currentQuestion.difficulty}</CardDescription>
+        <div className="flex justify-between items-center">
+            <div>
+                <CardTitle>Personalized Quiz</CardTitle>
+                <CardDescription>Category: {decodeHtml(currentQuestion.category)} | Difficulty: {currentQuestion.difficulty}</CardDescription>
+            </div>
+            {timeLeft !== null && (
+                <div className="flex items-center gap-2 text-lg font-mono p-2 rounded-md bg-muted">
+                    <Clock className="h-5 w-5"/>
+                    <span>{formatTime(timeLeft)}</span>
+                </div>
+            )}
+        </div>
         <div className="flex items-center pt-2">
             <span className="text-sm text-muted-foreground mr-2">Question {currentQuestionIndex + 1} of {questions.length}</span>
             <Progress value={progress} className="flex-grow" />
@@ -264,14 +317,14 @@ export default function QuizzesPage() {
                 variant="outline"
                 className={cn(
                     "h-auto justify-start text-left whitespace-normal py-3",
-                    isAnswered && isCorrect && "bg-green-100 border-green-400 text-green-800 hover:bg-green-200",
-                    isAnswered && isSelected && !isCorrect && "bg-red-100 border-red-400 text-red-800 hover:bg-red-200"
+                    isAnswered && isCorrect && "bg-green-100 border-green-400 text-green-800 hover:bg-green-200 dark:bg-green-900/50 dark:border-green-700 dark:text-green-300 dark:hover:bg-green-900",
+                    isAnswered && isSelected && !isCorrect && "bg-red-100 border-red-400 text-red-800 hover:bg-red-200 dark:bg-red-900/50 dark:border-red-700 dark:text-red-300 dark:hover:bg-red-900"
                 )}
                 onClick={() => handleAnswerSelect(answer)}
                 disabled={isAnswered}
               >
-                {isAnswered && isCorrect && <CheckCircle className="mr-2 text-green-600"/>}
-                {isAnswered && isSelected && !isCorrect && <XCircle className="mr-2 text-red-600"/>}
+                {isAnswered && isCorrect && <CheckCircle className="mr-2 text-green-600 dark:text-green-400"/>}
+                {isAnswered && isSelected && !isCorrect && <XCircle className="mr-2 text-red-600 dark:text-red-400"/>}
                 {answer}
               </Button>
             );
@@ -289,3 +342,5 @@ export default function QuizzesPage() {
     </Card>
   );
 }
+
+    
