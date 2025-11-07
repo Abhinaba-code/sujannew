@@ -24,7 +24,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { ArrowLeft, BrainCircuit } from 'lucide-react';
+import { ArrowLeft, GraduationCap } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 const formSchema = z.object({
@@ -69,8 +69,8 @@ export default function LoginPage() {
     <Card className="glassmorphism">
       <CardHeader className="text-center">
          <Link href="/" className="flex justify-center items-center gap-2 mb-2 text-current hover:text-primary transition-colors">
-           <BrainCircuit className="h-8 w-8" />
-           <CardTitle className="text-3xl font-headline">StudyBrain</CardTitle>
+           <GraduationCap className="h-8 w-8" />
+           <CardTitle className="text-3xl font-headline">StudyMate Lite</CardTitle>
          </Link>
         <CardDescription>Log in to your local study hub</CardDescription>
       </CardHeader>

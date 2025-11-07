@@ -14,7 +14,7 @@ export default function ContactPage() {
             </CardHeader>
             <CardContent>
                 <p className="mb-6">
-                    This is a demo application, so direct support is not available. However, we appreciate you exploring StudyBrain!
+                    This is a demo application, so direct support is not available. However, we appreciate you exploring StudyMate Lite!
                 </p>
                 <Button variant="outline" disabled>
                     <Mail className="mr-2 h-4 w-4" /> Email Support

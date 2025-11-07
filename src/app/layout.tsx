@@ -5,7 +5,7 @@ import { AppProvider } from '@/contexts/app-provider';
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'StudyBrain',
+  title: 'StudyMate Lite',
   description: 'Local Study Support System',
 };
 

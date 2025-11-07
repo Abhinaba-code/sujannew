@@ -11,7 +11,7 @@ export default function HelpPage() {
         <CardContent className="space-y-8">
             <div className="space-y-4">
                 <h3 className="text-xl font-semibold flex items-center"><HelpCircle className="mr-2 h-6 w-6 text-primary"/> Getting Started</h3>
-                <p>Welcome to StudyBrain! To get started, simply sign up for a new account. Since this is a local-first application, your account information is stored right here in your browser. After logging in, you'll land on your dashboard where you can access all the features.</p>
+                <p>Welcome to StudyMate Lite! To get started, simply sign up for a new account. Since this is a local-first application, your account information is stored right here in your browser. After logging in, you'll land on your dashboard where you can access all the features.</p>
             </div>
             <div className="space-y-4">
                 <h3 className="text-xl font-semibold flex items-center"><LifeBuoy className="mr-2 h-6 w-6 text-primary"/> Key Features</h3>

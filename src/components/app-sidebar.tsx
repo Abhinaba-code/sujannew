@@ -12,7 +12,7 @@ import {
   Scroll,
   Timer,
   FileQuestion,
-  BrainCircuit,
+  GraduationCap,
   X,
   Settings,
 } from 'lucide-react';
@@ -55,8 +55,8 @@ export function AppSidebar({ isMobile = false, closeSheet }: { isMobile?: boolea
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-20 items-center border-b px-4 lg:px-6">
             <Link href="#" className="flex items-center gap-2 font-semibold" onClick={(e) => {e.preventDefault(); if (isMobile && closeSheet) closeSheet()}}>
-              <BrainCircuit className="h-6 w-6 text-primary" />
-              <span className="">StudyBrain</span>
+              <GraduationCap className="h-6 w-6 text-primary" />
+              <span className="">StudyMate Lite</span>
             </Link>
             {isMobile && closeSheet ? (
               <Button variant="ghost" size="icon" className="ml-auto h-8 w-8" onClick={closeSheet}>
