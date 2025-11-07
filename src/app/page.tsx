@@ -2,8 +2,7 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { BrainCircuit, BookOpen, ClipboardList, Calendar, Timer, Wand2, Mail, HelpCircle, Shield, FileText } from 'lucide-react';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { BrainCircuit, BookOpen, ClipboardList, Calendar, Timer, Wand2 } from 'lucide-react';
 
 const features = [
   { icon: BookOpen, text: 'Detailed Notes' },
@@ -14,11 +13,9 @@ const features = [
 ];
 
 const navLinks = [
-    { href: '#about', label: 'About' },
-    { href: '#faq', label: 'FAQ' },
-    { href: '#contact', label: 'Contact' },
-    { href: '#privacy', label: 'Privacy' },
-    { href: '#terms', label: 'Terms' },
+    { href: '/about', label: 'About' },
+    { href: '/faq', label: 'FAQ' },
+    { href: '/contact', label: 'Contact' },
 ];
 
 export default function LandingPage() {
@@ -60,10 +57,10 @@ export default function LandingPage() {
                 </div>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
                   <Button asChild size="lg">
-                    <Link href="/login">Get Started</Link>
+                    <Link href="/signup">Get Started</Link>
                   </Button>
                   <Button asChild variant="outline" size="lg">
-                    <Link href="/signup">Sign Up</Link>
+                    <Link href="#features">Learn More</Link>
                   </Button>
                 </div>
               </div>
@@ -97,103 +94,18 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
-
-        <section id="about" className="w-full py-12 md:py-24 lg:py-32">
-            <div className="container px-4 md:px-6">
-                <div className="space-y-4 text-center">
-                    <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm">About Us</div>
-                    <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Our Mission</h2>
-                    <p className="max-w-[900px] mx-auto text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                        StudyMate Lite was born from a simple idea: to create a powerful, private, and efficient study tool for students everywhere. We believe that your study data is yours alone. That's why our app runs entirely on your local machine, ensuring complete privacy and offline accessibility. Our mission is to empower learners with the tools they need to succeed without compromising their data.
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <section id="faq" className="w-full py-12 md:py-24 lg:py-32 bg-muted/40">
-            <div className="container px-4 md:px-6">
-                <div className="space-y-4 text-center mb-12">
-                    <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm">FAQ</div>
-                    <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Frequently Asked Questions</h2>
-                </div>
-                <Accordion type="single" collapsible className="w-full max-w-3xl mx-auto">
-                    <AccordionItem value="item-1">
-                        <AccordionTrigger>Is my data secure?</AccordionTrigger>
-                        <AccordionContent>
-                        Absolutely. StudyMate Lite stores all your data locally on your device. Nothing is ever sent to the cloud, ensuring your notes, tasks, and study materials remain completely private.
-                        </AccordionContent>
-                    </AccordionItem>
-                    <AccordionItem value="item-2">
-                        <AccordionTrigger>Can I use this app offline?</AccordionTrigger>
-                        <AccordionContent>
-                        Yes! Since everything is stored locally, the app is fully functional without an internet connection. The only exception is the AI flashcard generation, which requires an internet connection to communicate with the AI model.
-                        </AccordionContent>
-                    </AccordionItem>
-                    <AccordionItem value="item-3">
-                        <AccordionTrigger>Is there a cost to use StudyMate Lite?</AccordionTrigger>
-                        <AccordionContent>
-                        StudyMate Lite is completely free to use. We believe in providing accessible tools for all students.
-                        </AccordionContent>
-                    </AccordionItem>
-                    <AccordionItem value="item-4">
-                        <AccordionTrigger>On which devices can I use the app?</AccordionTrigger>
-                        <AccordionContent>
-                        The application is designed to run in a web browser on any modern desktop or laptop computer.
-                        </AccordionContent>
-                    </AccordionItem>
-                </Accordion>
-            </div>
-        </section>
-
-        <section id="contact" className="w-full py-12 md:py-24 lg:py-32">
-            <div className="container grid items-center justify-center gap-4 px-4 text-center md:px-6">
-                <div className="space-y-3">
-                    <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">Contact Us</h2>
-                    <p className="mx-auto max-w-[600px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                        Have questions or feedback? We'd love to hear from you.
-                    </p>
-                </div>
-                <div className="mx-auto w-full max-w-sm space-y-2">
-                   <Button variant="outline">
-                        <Mail className="mr-2 h-4 w-4" /> Email Support
-                   </Button>
-                </div>
-            </div>
-        </section>
-
-        <section id="privacy" className="w-full py-12 md:py-24 lg:py-32 bg-muted/40">
-            <div className="container px-4 md:px-6">
-                <div className="space-y-4 text-center">
-                     <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm">Privacy</div>
-                    <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Privacy Policy</h2>
-                    <p className="max-w-[900px] mx-auto text-muted-foreground">
-                        Your privacy is our top priority. All data created within StudyMate Lite is stored exclusively in your browser's local storage. We do not collect, transmit, or have any access to your personal information or study materials. The AI features communicate with a third-party service, but your original text is processed ephemerally and not stored.
-                    </p>
-                </div>
-            </div>
-        </section>
-        
-        <section id="terms" className="w-full py-12 md:py-24 lg:py-32">
-            <div className="container px-4 md:px-6">
-                <div className="space-y-4 text-center">
-                    <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm">Legal</div>
-                    <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Terms & Conditions</h2>
-                    <p className="max-w-[900px] mx-auto text-muted-foreground">
-                        By using StudyMate Lite, you agree that you are responsible for the data you create and manage. The software is provided "as is" without warranty of any kind. The developers are not liable for any data loss or damages. Use of the AI features is subject to the terms of the underlying generative model provider.
-                    </p>
-                </div>
-            </div>
-        </section>
-
       </main>
       <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
         <p className="text-xs text-muted-foreground">&copy; 2024 StudyMate Lite. All rights reserved.</p>
         <nav className="sm:ml-auto flex gap-4 sm:gap-6">
-          <Link href="#privacy" className="text-xs hover:underline underline-offset-4">
+          <Link href="/terms" className="text-xs hover:underline underline-offset-4">
+            Terms of Service
+          </Link>
+          <Link href="/privacy" className="text-xs hover:underline underline-offset-4">
             Privacy
           </Link>
-          <Link href="#terms" className="text-xs hover:underline underline-offset-4">
-            Terms
+          <Link href="/help" className="text-xs hover:underline underline-offset-4">
+            Help
           </Link>
         </nav>
       </footer>
