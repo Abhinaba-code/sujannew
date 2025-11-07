@@ -24,7 +24,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { GraduationCap } from 'lucide-react';
+import { ArrowLeft, GraduationCap } from 'lucide-react';
 
 const formSchema = z.object({
   username: z.string()
@@ -124,13 +124,16 @@ export default function SignupPage() {
           </form>
         </Form>
       </CardContent>
-      <CardFooter className="justify-center">
+      <CardFooter className="flex-col gap-4">
         <p className="text-sm text-muted-foreground">
           Already have an account?{' '}
           <Button variant="link" asChild className="p-0">
             <Link href="/login">Log in</Link>
           </Button>
         </p>
+         <Button variant="ghost" asChild className="text-sm text-muted-foreground">
+            <Link href="/"><ArrowLeft className="mr-2 h-4 w-4" />Back to Home</Link>
+        </Button>
       </CardFooter>
     </Card>
   );
