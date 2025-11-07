@@ -33,6 +33,8 @@ export function MotivationalQuote() {
     } catch (error) {
       console.error("Failed to fetch quote", error);
       setError('Could not load a quote. Please try again.');
+      // Set a fallback quote on error
+      setQuote({ q: "The secret to getting ahead is getting started.", a: "Mark Twain" });
     } finally {
       setIsLoading(false);
     }
@@ -46,7 +48,7 @@ export function MotivationalQuote() {
     <Card className="glassmorphism">
       <CardContent className="p-3">
         {isLoading && <p className="text-sm text-muted-foreground">Loading quote...</p>}
-        {error && <p className="text-sm text-destructive">{error}</p>}
+        {error && !isLoading && <p className="text-sm text-destructive">{error}</p>}
         {quote && (
           <div className="space-y-2">
             <blockquote className="text-sm italic">"{quote.q}"</blockquote>
