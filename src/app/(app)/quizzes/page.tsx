@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
@@ -77,7 +76,7 @@ export default function QuizzesPage() {
       amount: 10,
       category: 'any',
       difficulty: 'medium',
-      timeLimit: 0,
+      timeLimit: 600,
   });
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [questionTimeLeft, setQuestionTimeLeft] = useState(20);
