@@ -13,7 +13,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { LogOut, Menu, Search, Settings, User as UserIcon, Bell } from 'lucide-react';
+import { LogOut, Menu, Search, Settings, User as UserIcon } from 'lucide-react';
 import { ThemeToggle } from './theme-toggle';
 import { AppSidebar } from './app-sidebar';
 import { usePathname, useRouter } from 'next/navigation';
@@ -85,7 +85,7 @@ export function AppHeader() {
 
       <h1 className="text-xl font-semibold md:text-2xl font-headline hidden sm:block">{pageTitle}</h1>
 
-      <div className="flex w-full items-center justify-end gap-2 md:ml-auto md:gap-2">
+      <div className="flex w-full items-center justify-end gap-2 md:ml-auto md:gap-4">
         <WorldClock />
         <form onSubmit={handleSearchSubmit} className="flex-1 max-w-xs md:max-w-sm ml-auto">
           <div className="relative">
@@ -99,10 +99,7 @@ export function AppHeader() {
             />
           </div>
         </form>
-         <Button variant="outline" size="icon" className="h-10 w-10 md:hidden">
-            <Bell className="h-5 w-5" />
-            <span className="sr-only">Toggle notifications</span>
-        </Button>
+
         <ThemeToggle />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -120,7 +117,7 @@ export function AppHeader() {
               <UserIcon className="mr-2 h-4 w-4" />
               <span>Profile</span>
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push('/settings')}>
               <Settings className="mr-2 h-4 w-4" />
               <span>Settings</span>
             </DropdownMenuItem>

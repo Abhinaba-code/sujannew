@@ -14,6 +14,7 @@ import {
   FileQuestion,
   BrainCircuit,
   X,
+  Settings,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -35,6 +36,10 @@ const navItems = [
   { href: '/search', icon: LayoutGrid, label: 'Smart Search' },
 ];
 
+const secondaryNavItems = [
+    { href: '/settings', icon: Settings, label: 'Settings' },
+]
+
 export function AppSidebar({ isMobile = false, closeSheet }: { isMobile?: boolean, closeSheet?: () => void }) {
   const pathname = usePathname();
 
@@ -48,7 +53,7 @@ export function AppSidebar({ isMobile = false, closeSheet }: { isMobile?: boolea
       >
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-20 items-center border-b px-4 lg:px-6">
-            <Link href="#" className="flex items-center gap-2 font-semibold" onClick={(e) => e.preventDefault()}>
+            <Link href="#" className="flex items-center gap-2 font-semibold" onClick={(e) => {e.preventDefault(); if (isMobile && closeSheet) closeSheet()}}>
               <BrainCircuit className="h-6 w-6 text-primary" />
               <span className="">StudyBrain</span>
             </Link>
@@ -57,12 +62,7 @@ export function AppSidebar({ isMobile = false, closeSheet }: { isMobile?: boolea
                 <X className="h-5 w-5" />
                 <span className="sr-only">Close menu</span>
               </Button>
-            ) : (
-              <Button variant="outline" size="icon" className="ml-auto h-8 w-8">
-                <Bell className="h-4 w-4" />
-                <span className="sr-only">Toggle notifications</span>
-              </Button>
-            )}
+            ) : null}
           </div>
           <div className="flex-1 overflow-auto py-2">
             {isMobile ? (
@@ -109,6 +109,39 @@ export function AppSidebar({ isMobile = false, closeSheet }: { isMobile?: boolea
                     })}
                     </nav>
             )}
+          </div>
+          <div className="mt-auto border-t p-2">
+             <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
+                 {secondaryNavItems.map(({ href, icon: Icon, label }) => {
+                    const isActive = pathname.startsWith(href);
+                    return (
+                        <Tooltip key={href}>
+                            <TooltipTrigger asChild>
+                                <Link
+                                    href={href}
+                                    onClick={closeSheet}
+                                    className={cn(
+                                        'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
+                                        { 'bg-muted text-primary': isActive },
+                                        isMobile && 'hover:scale-105 hover:translate-x-1'
+                                    )}
+                                >
+                                    <Icon className="h-4 w-4" />
+                                    <span>{label}</span>
+                                </Link>
+                            </TooltipTrigger>
+                            {!isMobile && <TooltipContent side="right">{label}</TooltipContent>}
+                        </Tooltip>
+                    );
+                })}
+             </nav>
+          </div>
+          <div className='p-4 border-t flex items-center gap-4'>
+            <Button variant="outline" size="icon" className='h-9 w-9'>
+                <Bell className="h-4 w-4" />
+                <span className="sr-only">Toggle notifications</span>
+            </Button>
+            <p className='text-sm text-muted-foreground'>Notifications</p>
           </div>
         </div>
       </div>
