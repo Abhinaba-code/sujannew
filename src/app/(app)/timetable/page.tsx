@@ -1,6 +1,7 @@
+
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useAuth } from '@/hooks/use-auth';
 import type { TimetableEntry } from '@/lib/types';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
@@ -10,8 +11,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { PlusCircle, Trash2 } from 'lucide-react';
+import { PlusCircle, Trash2, Clock, Edit } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 const timeSlots = Array.from({ length: 19 }, (_, i) => `${String(i + 5).padStart(2, '0')}:00`); // 05:00 to 23:00
@@ -62,9 +65,11 @@ function TimetableForm({ entry, onSave, onDelete }: { entry?: Partial<TimetableE
             </div>
             <DialogFooter className="flex flex-col-reverse sm:flex-row sm:justify-between pt-4 gap-2">
                 {entry?.id && onDelete && (
-                    <Button variant="destructive" onClick={() => onDelete(entry.id!)} className="w-full sm:w-auto">
-                        <Trash2 className="mr-2 h-4 w-4" /> Delete
-                    </Button>
+                     <DialogClose asChild>
+                        <Button variant="destructive" onClick={() => onDelete(entry.id!)} className="w-full sm:w-auto">
+                            <Trash2 className="mr-2 h-4 w-4" /> Delete
+                        </Button>
+                    </DialogClose>
                 )}
                 <DialogClose asChild>
                     <Button onClick={handleSubmit} className="w-full sm:w-auto ml-auto">Save Entry</Button>
@@ -79,6 +84,16 @@ export default function TimetablePage() {
     const { toast } = useToast();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [selectedEntry, setSelectedEntry] = useState<Partial<TimetableEntry> | null>(null);
+
+    const [currentDay, setCurrentDay] = useState(daysOfWeek[new Date().getDay() - 1] || daysOfWeek[0]);
+    
+    useEffect(() => {
+        const todayIndex = new Date().getDay(); // Sunday is 0, Monday is 1, etc.
+        const todayName = daysOfWeek[todayIndex === 0 ? 6 : todayIndex - 1]; // Adjust index
+        if (todayName) {
+            setCurrentDay(todayName);
+        }
+    }, []);
 
     const entries = user?.data.timetable || [];
 
@@ -110,11 +125,8 @@ export default function TimetablePage() {
         setSelectedEntry(null);
     };
 
-    const handleCellClick = (day: string, time: string) => {
-        const entry = getEntryForSlot(day, time);
-        // If clicking an existing entry, open it for editing.
-        // If clicking an empty slot, pre-fill day and time.
-        setSelectedEntry(entry || { day, startTime: time });
+    const handleCellClick = (entry: TimetableEntry | Partial<TimetableEntry> | null) => {
+        setSelectedEntry(entry);
         setIsDialogOpen(true);
     }
     
@@ -128,6 +140,18 @@ export default function TimetablePage() {
       });
     }
 
+    const entriesByDay = useMemo(() => {
+        return entries.reduce((acc, entry) => {
+            const day = entry.day as (typeof daysOfWeek)[number];
+            if (!acc[day]) {
+                acc[day] = [];
+            }
+            acc[day].push(entry);
+            acc[day].sort((a, b) => a.startTime.localeCompare(b.startTime));
+            return acc;
+        }, {} as Record<(typeof daysOfWeek)[number], TimetableEntry[]>);
+    }, [entries]);
+
     return (
         <div>
             <Dialog open={isDialogOpen} onOpenChange={(isOpen) => { setIsDialogOpen(isOpen); if (!isOpen) setSelectedEntry(null); }}>
@@ -135,7 +159,7 @@ export default function TimetablePage() {
                     <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                         <div>
                             <CardTitle>Study Timetable</CardTitle>
-                            <CardDescription>Your weekly study schedule. Click any slot to add or edit.</CardDescription>
+                            <CardDescription>Your weekly study schedule.</CardDescription>
                         </div>
                          <DialogTrigger asChild>
                             <Button onClick={() => setSelectedEntry(null)} className="w-full sm:w-auto">
@@ -145,7 +169,48 @@ export default function TimetablePage() {
                         </DialogTrigger>
                     </CardHeader>
                     <CardContent>
-                        <div className="overflow-x-auto">
+                        {/* Mobile View */}
+                        <div className="md:hidden">
+                             <Tabs value={currentDay} onValueChange={setCurrentDay} className="w-full">
+                                <TabsList className="grid w-full grid-cols-3 sm:grid-cols-7 mb-4">
+                                    {daysOfWeek.map(day => (
+                                        <TabsTrigger key={day} value={day}>{day.substring(0,3)}</TabsTrigger>
+                                    ))}
+                                </TabsList>
+                                {daysOfWeek.map(day => (
+                                    <TabsContent key={day} value={day}>
+                                        {(entriesByDay[day as keyof typeof entriesByDay] && entriesByDay[day as keyof typeof entriesByDay].length > 0) ? (
+                                            <div className="space-y-3">
+                                                {entriesByDay[day as keyof typeof entriesByDay].map(entry => (
+                                                    <Card key={entry.id} className="w-full">
+                                                        <CardContent className="p-4 flex items-center justify-between">
+                                                            <div>
+                                                                <p className="font-semibold">{entry.subject}</p>
+                                                                <p className="text-sm text-muted-foreground flex items-center">
+                                                                    <Clock className="w-4 h-4 mr-1.5" />
+                                                                    {entry.startTime} - {entry.endTime}
+                                                                </p>
+                                                            </div>
+                                                            <Button variant="ghost" size="icon" onClick={() => handleCellClick(entry)}>
+                                                                <Edit className="h-5 w-5" />
+                                                            </Button>
+                                                        </CardContent>
+                                                    </Card>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <div className="text-center py-12 border-2 border-dashed rounded-lg">
+                                                <p className="text-muted-foreground">No classes scheduled for {day}.</p>
+                                            </div>
+                                        )}
+                                    </TabsContent>
+                                ))}
+                            </Tabs>
+                        </div>
+
+                        {/* Desktop View */}
+                        <div className="hidden md:block overflow-x-auto">
+                            <p className="text-sm text-muted-foreground mb-2">Click any slot to add or edit.</p>
                             <Table className="border min-w-[800px] md:min-w-full">
                                 <TableHeader>
                                     <TableRow>
@@ -164,7 +229,7 @@ export default function TimetablePage() {
                                                 const isFirstSlotOfEntry = entry && parseInt(entry.startTime.split(':')[0]) === parseInt(time.split(':')[0]);
 
                                                 return (
-                                                    <TableCell key={day} onClick={() => handleCellClick(day, time)} className="cursor-pointer hover:bg-muted/50 p-1">
+                                                    <TableCell key={day} onClick={() => handleCellClick(entry || { day, startTime: time })} className="cursor-pointer hover:bg-muted/50 p-1">
                                                         {isFirstSlotOfEntry ? (
                                                             <div className="bg-primary/20 text-primary-foreground p-2 rounded-md text-center h-full flex flex-col justify-center">
                                                                 <p className="font-semibold text-sm">{entry.subject}</p>
@@ -195,3 +260,5 @@ export default function TimetablePage() {
         </div>
     );
 }
+
+    
