@@ -38,7 +38,7 @@ export default function LandingPage() {
             <Link href="/login">Login</Link>
           </Button>
           <Button asChild>
-            <Link href="/signup">Sign Up</Link>_
+            <Link href="/signup">Sign Up</Link>
           </Button>
         </div>
       </header>
