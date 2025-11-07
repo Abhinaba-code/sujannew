@@ -11,12 +11,12 @@ export default function PrivacyPage() {
           <p><strong>Last Updated: {new Date().toLocaleDateString()}</strong></p>
           
           <p>
-            Your privacy is our top priority. This Privacy Policy explains how StudyMate Lite handles your information. By using our application, you agree to the terms of this policy.
+            Your privacy is our top priority. This Privacy Policy explains how StudyBrain handles your information. By using our application, you agree to the terms of this policy.
           </p>
 
           <h3>1. Data Storage</h3>
           <p>
-            All data you create and use within StudyMate Lite, including notes, tasks, schedules, and flashcards, is stored exclusively in your web browser's local storage on your device.
+            All data you create and use within StudyBrain, including notes, tasks, schedules, and flashcards, is stored exclusively in your web browser's local storage on your device.
           </p>
 
           <h3>2. Data Collection</h3>
@@ -24,7 +24,7 @@ export default function PrivacyPage() {
             We do not collect, transmit, view, or store any of your personal data or content on our servers. We have no access to the information you input into the application.
           </p>
 
-          <h3>3_ AI Features</h3>
+          <h3>3. AI Features</h3>
           <p>
             The AI-powered flashcard generation feature sends the text you provide to a third-party generative AI service (such as Google's Gemini) to create flashcards. This data is processed ephemerally by the AI provider to generate a response and is not stored or used to train their models. We do not log or store the content you send or the flashcards you receive.
           </p>
@@ -36,7 +36,7 @@ export default function PrivacyPage() {
 
           <h3>5. Cookies</h3>
           <p>
-            StudyMate Lite does not use tracking cookies. We only use essential local storage to save your application state and data.
+            StudyBrain does not use tracking cookies. We only use essential local storage to save your application state and data.
           </p>
 
           <h3>6. Changes to This Policy</h3>
