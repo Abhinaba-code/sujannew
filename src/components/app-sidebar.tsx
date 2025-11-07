@@ -24,6 +24,7 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from '@/components/ui/tooltip';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu';
 
 const navItems = [
   { href: '/dashboard', icon: Home, label: 'Dashboard' },
@@ -136,12 +137,25 @@ export function AppSidebar({ isMobile = false, closeSheet }: { isMobile?: boolea
                 })}
              </nav>
           </div>
-          <div className='p-4 border-t flex items-center gap-4'>
-            <Button variant="outline" size="icon" className='h-9 w-9'>
-                <Bell className="h-4 w-4" />
-                <span className="sr-only">Toggle notifications</span>
-            </Button>
-            <p className='text-sm text-muted-foreground'>Notifications</p>
+          <div className='p-4 border-t'>
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <div className='flex items-center gap-4 cursor-pointer'>
+                    <Button variant="outline" size="icon" className='h-9 w-9'>
+                        <Bell className="h-4 w-4" />
+                        <span className="sr-only">Toggle notifications</span>
+                    </Button>
+                    <p className='text-sm text-muted-foreground'>Notifications</p>
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="flex justify-center text-muted-foreground">
+                        You have no new notifications.
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </div>
