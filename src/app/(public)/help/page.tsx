@@ -29,9 +29,15 @@ export default function HelpPage() {
                 <p>Because all your data is stored in your browser's local storage, clearing your browser's cache or data for this website will result in the permanent loss of all your notes, tasks, and flashcards. Please be careful and consider exporting important information periodically if needed.</p>
             </div>
         </CardContent>
-        <CardFooter className="bg-muted/50 p-4 justify-center">
-            <p className="text-sm text-muted-foreground flex items-center gap-1.5">
-                Made with <Heart className="h-4 w-4 text-red-500" /> by Abhinaba Roy Pradhan and Sujan Roy
+        <CardFooter className="bg-muted/50 p-6 justify-center">
+            <p className="text-muted-foreground text-center">
+                Made with <Heart className="inline-block h-5 w-5 text-red-500 animate-pulse" /> by <br className="sm:hidden" />
+                <span className="font-semibold text-lg bg-gradient-to-r from-primary via-accent to-secondary-foreground bg-clip-text text-transparent transition-all duration-300 hover:tracking-wider">
+                    Abhinaba Roy Pradhan
+                </span> & 
+                <span className="font-semibold text-lg bg-gradient-to-r from-secondary-foreground via-accent to-primary bg-clip-text text-transparent transition-all duration-300 hover:tracking-wider">
+                    Sujan Roy
+                </span>
             </p>
         </CardFooter>
       </Card>

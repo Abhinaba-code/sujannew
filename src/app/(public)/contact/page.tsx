@@ -21,9 +21,15 @@ export default function ContactPage() {
                     <Mail className="mr-2 h-4 w-4" /> Email Support
                 </Button>
             </CardContent>
-            <CardFooter className="bg-muted/50 p-4 justify-center">
-                <p className="text-sm text-muted-foreground flex items-center gap-1.5">
-                    Made with <Heart className="h-4 w-4 text-red-500" /> by Abhinaba Roy Pradhan and Sujan Roy
+            <CardFooter className="bg-muted/50 p-6 justify-center">
+                <p className="text-muted-foreground text-center">
+                    Made with <Heart className="inline-block h-5 w-5 text-red-500 animate-pulse" /> by <br className="sm:hidden" />
+                    <span className="font-semibold text-lg bg-gradient-to-r from-primary via-accent to-secondary-foreground bg-clip-text text-transparent transition-all duration-300 hover:tracking-wider">
+                        Abhinaba Roy Pradhan
+                    </span> & 
+                    <span className="font-semibold text-lg bg-gradient-to-r from-secondary-foreground via-accent to-primary bg-clip-text text-transparent transition-all duration-300 hover:tracking-wider">
+                        Sujan Roy
+                    </span>
                 </p>
             </CardFooter>
         </Card>
