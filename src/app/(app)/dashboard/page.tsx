@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/use-auth';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
@@ -30,34 +30,10 @@ type WikiArticle = {
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const [featuredArticle, setFeaturedArticle] = useState<WikiArticle | null>(null);
   const [searchedArticle, setSearchedArticle] = useState<WikiArticle | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoadingSearch, setIsLoadingSearch] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function fetchFeaturedArticle() {
-      try {
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = (today.getMonth() + 1).toString().padStart(2, '0');
-        const day = today.getDate().toString().padStart(2, '0');
-        const response = await fetch(`https://api.wikimedia.org/feed/v1/wikipedia/en/featured/${year}/${month}/${day}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch article');
-        }
-        const data = await response.json();
-        if (data.tfa) {
-            setFeaturedArticle(data.tfa);
-        }
-      } catch (error) {
-        console.error("Error fetching Wikipedia article:", error);
-      }
-    }
-
-    fetchFeaturedArticle();
-  }, []);
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -124,20 +100,6 @@ export default function Dashboard() {
           </CardContent>
         )}
       </Card>
-
-      {featuredArticle && (
-          <Card className="glassmorphism">
-            <CardHeader>
-                <CardTitle>Today's Featured Article: {featuredArticle.title}</CardTitle>
-            </CardHeader>
-              <CardContent className="p-6">
-                  <p className="text-muted-foreground line-clamp-3">{featuredArticle.extract}</p>
-                  <a href={featuredArticle.content_urls.desktop.page} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline mt-2 inline-block">
-                    Read more on Wikipedia
-                  </a>
-              </CardContent>
-          </Card>
-      )}
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {navCards.map((card) => (
