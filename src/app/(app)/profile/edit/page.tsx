@@ -89,7 +89,7 @@ export default function EditProfilePage() {
                                 <FormItem>
                                 <FormLabel>Full Name</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="e.g. Jane Doe" {...field} />
+                                    <Input placeholder="e.g. Sujan Roy" {...field} />
                                 </FormControl>
                                 <FormMessage />
                                 </FormItem>
