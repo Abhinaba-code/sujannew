@@ -14,7 +14,7 @@ import { PlusCircle, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-const timeSlots = Array.from({ length: 13 }, (_, i) => `${String(i + 8).padStart(2, '0')}:00`); // 8:00 to 20:00
+const timeSlots = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, '0')}:00`); // 00:00 to 23:00
 
 function TimetableForm({ entry, onSave, onDelete }: { entry?: Partial<TimetableEntry> | null, onSave: (entry: Omit<TimetableEntry, 'id'>) => void, onDelete?: (id: string) => void }) {
     const [subject, setSubject] = useState(entry?.subject || '');
