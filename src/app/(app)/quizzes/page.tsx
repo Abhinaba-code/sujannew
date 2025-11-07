@@ -230,7 +230,7 @@ export default function QuizzesPage() {
     if (quizState === 'playing' && ['medium', 'hard', 'super-hard'].includes(settings.difficulty)) {
         toast({
             variant: 'destructive',
-            title: 'You are a Big NOOB 👎',
+            title: 'You are a Big NOOB 👎😂😂😂',
         });
     }
     setQuizState('settings');
