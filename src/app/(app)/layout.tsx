@@ -7,7 +7,6 @@ import { AppSidebar } from '@/components/app-sidebar';
 import { AppHeader } from '@/components/app-header';
 import { Loader2 } from 'lucide-react';
 import { MotivationalQuote } from '@/components/motivational-quote';
-import { WorldClock } from '@/components/world-clock';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();
@@ -60,9 +59,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     <div className="flex min-h-screen w-full">
       <AppSidebar />
       <div className="flex flex-1 flex-col">
-        <div className="flex h-10 items-center justify-center border-b bg-muted/40 px-4 text-sm">
-          <WorldClock />
-        </div>
         <AppHeader />
         <main className="flex-1 overflow-y-auto p-4 md:p-8">
           <MotivationalQuote />

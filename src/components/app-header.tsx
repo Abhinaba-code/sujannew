@@ -18,6 +18,7 @@ import { ThemeToggle } from './theme-toggle';
 import { AppSidebar } from './app-sidebar';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { WorldClock } from './world-clock';
 
 const getTitleFromPath = (path: string) => {
   const segments = path.split('/').filter(Boolean);
@@ -67,7 +68,7 @@ export function AppHeader() {
   const closeSheet = () => setIsSheetOpen(false);
 
   return (
-    <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background/80 backdrop-blur-lg px-4 md:px-6">
+    <header className="sticky top-0 z-10 flex h-20 items-center gap-4 border-b bg-background/80 backdrop-blur-lg px-4 md:px-6">
       <div className="md:hidden">
         <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
           <SheetTrigger asChild>
@@ -82,9 +83,10 @@ export function AppHeader() {
         </Sheet>
       </div>
 
-      <h1 className="text-xl font-semibold md:text-2xl font-headline">{pageTitle}</h1>
+      <h1 className="text-xl font-semibold md:text-2xl font-headline hidden sm:block">{pageTitle}</h1>
 
-      <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
+      <div className="flex w-full items-center gap-2 md:ml-auto md:gap-2 lg:gap-4">
+        <WorldClock />
         <form onSubmit={handleSearchSubmit} className="ml-auto flex items-center gap-4">
           <div className="relative flex-1 sm:flex-initial">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -92,7 +94,7 @@ export function AppHeader() {
               type="search"
               name="search"
               placeholder="Search everything..."
-              className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]"
+              className="pl-8 sm:w-[200px] md:w-[200px] lg:w-[300px]"
               onFocus={handleSearchFocus}
             />
           </div>
