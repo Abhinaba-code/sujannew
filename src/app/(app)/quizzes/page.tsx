@@ -11,6 +11,7 @@ import { Progress } from '@/components/ui/progress';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { generateTrollMessage } from '@/ai/flows/generate-troll-message';
+import { useToast } from '@/hooks/use-toast';
 
 type Question = {
   category: string;
@@ -82,6 +83,7 @@ export default function QuizzesPage() {
   const [questionTimeLeft, setQuestionTimeLeft] = useState(20);
   const [showSurvivalMessage, setShowSurvivalMessage] = useState(false);
   const [trollMessage, setTrollMessage] = useState('');
+  const { toast } = useToast();
 
   const questionTimerDuration = useMemo(() => {
     switch (settings.difficulty) {
@@ -225,6 +227,12 @@ export default function QuizzesPage() {
   };
 
   const restartQuiz = () => {
+    if (quizState === 'playing' && ['medium', 'hard', 'super-hard'].includes(settings.difficulty)) {
+        toast({
+            variant: 'destructive',
+            title: 'You are a Big NOOB 👎',
+        });
+    }
     setQuizState('settings');
     setQuestions([]);
     setError(null);
