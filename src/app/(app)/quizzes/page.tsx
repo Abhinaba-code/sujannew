@@ -87,9 +87,18 @@ export default function QuizzesPage() {
       timeLimit: 0,
   });
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
-  const [questionTimeLeft, setQuestionTimeLeft] = useState(10);
+  const [questionTimeLeft, setQuestionTimeLeft] = useState(20);
   const [showSurvivalMessage, setShowSurvivalMessage] = useState(false);
   const [trollMessage, setTrollMessage] = useState('');
+
+  const questionTimerDuration = useMemo(() => {
+    switch (settings.difficulty) {
+        case 'super-hard': return 10;
+        case 'hard':
+        case 'medium': return 20;
+        default: return null;
+    }
+  }, [settings.difficulty]);
 
   useEffect(() => {
     async function fetchCategories() {
@@ -120,7 +129,7 @@ export default function QuizzesPage() {
   }, [quizState, timeLeft]);
 
   useEffect(() => {
-    if (quizState === 'playing' && settings.difficulty === 'super-hard' && !isAnswered) {
+    if (quizState === 'playing' && questionTimerDuration && !isAnswered) {
       if (questionTimeLeft > 0) {
         const timer = setInterval(() => {
           setQuestionTimeLeft(prev => prev - 1);
@@ -134,7 +143,7 @@ export default function QuizzesPage() {
         }
       }
     }
-  }, [quizState, settings.difficulty, isAnswered, questionTimeLeft, showSurvivalMessage]);
+  }, [quizState, isAnswered, questionTimeLeft, showSurvivalMessage, questionTimerDuration]);
 
 
   const fetchQuestions = useCallback(async () => {
@@ -167,7 +176,9 @@ export default function QuizzesPage() {
       } else {
         setTimeLeft(null);
       }
-      setQuestionTimeLeft(10);
+      if(questionTimerDuration) {
+          setQuestionTimeLeft(questionTimerDuration);
+      }
       setShowSurvivalMessage(false);
     } catch (err: any) {
       setError(err.message);
@@ -175,7 +186,7 @@ export default function QuizzesPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [settings]);
+  }, [settings, questionTimerDuration]);
 
   const currentQuestion = questions[currentQuestionIndex];
   
@@ -201,7 +212,9 @@ export default function QuizzesPage() {
         setIsAnswered(false);
         setSelectedAnswer(null);
         setCurrentQuestionIndex(prev => prev + 1);
-        setQuestionTimeLeft(10);
+        if(questionTimerDuration){
+            setQuestionTimeLeft(questionTimerDuration);
+        }
         setShowSurvivalMessage(false);
         setTrollMessage('');
     } else {
@@ -343,7 +356,7 @@ export default function QuizzesPage() {
       <CardContent className="space-y-4">
         <p className="text-lg font-semibold">{currentQuestion.question}</p>
         
-        {settings.difficulty === 'super-hard' && !isAnswered && (
+        {questionTimerDuration && !isAnswered && (
           <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
             <Clock className="h-4 w-4"/>
             <span>Time for this question: {questionTimeLeft}s</span>
