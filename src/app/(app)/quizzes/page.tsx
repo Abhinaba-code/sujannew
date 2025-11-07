@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
+import { generateTrollMessage } from '@/ai/flows/generate-troll-message';
 
 type Question = {
   category: string;
@@ -39,15 +40,6 @@ type QuizSettings = {
     difficulty: DifficultySetting;
     timeLimit: number; // in seconds, 0 for no limit
 }
-
-const trollMessages = [
-  "You can't survive here, go back to your study table! 💀",
-  "Are you consulting a textbook for this? 🤨",
-  "I could have solved this and written a novel by now. 📖",
-  "Still thinking? My grandma answered this faster from her nap. 😴",
-  "Did you forget how to click? The answer isn't going to select itself. 🖱️",
-  "This isn't rocket science... or is it? 🤔 Either way, time's up!"
-];
 
 // Function to decode HTML entities
 function decodeHtml(html: string) {
@@ -128,6 +120,18 @@ export default function QuizzesPage() {
     return () => clearInterval(timer);
   }, [quizState, timeLeft]);
 
+  const fetchTrollMessage = useCallback(async () => {
+    try {
+      const response = await generateTrollMessage();
+      setTrollMessage(response.message);
+    } catch (error) {
+      console.error("Failed to generate troll message, using fallback.", error);
+      setTrollMessage("Thinking hard or hardly thinking? 🤔");
+    } finally {
+        setShowSurvivalMessage(true);
+    }
+  }, []);
+
   useEffect(() => {
     if (quizState === 'playing' && questionTimerDuration && !isAnswered) {
       if (questionTimeLeft > 0) {
@@ -137,13 +141,11 @@ export default function QuizzesPage() {
         return () => clearInterval(timer);
       } else {
         if (!showSurvivalMessage) {
-            const randomMessage = trollMessages[Math.floor(Math.random() * trollMessages.length)];
-            setTrollMessage(randomMessage);
-            setShowSurvivalMessage(true);
+            fetchTrollMessage();
         }
       }
     }
-  }, [quizState, isAnswered, questionTimeLeft, showSurvivalMessage, questionTimerDuration]);
+  }, [quizState, isAnswered, questionTimeLeft, showSurvivalMessage, questionTimerDuration, fetchTrollMessage]);
 
 
   const fetchQuestions = useCallback(async () => {
@@ -365,7 +367,7 @@ export default function QuizzesPage() {
 
         {showSurvivalMessage && (
             <p className="text-center text-destructive font-semibold text-sm">
-                {trollMessage}
+                {trollMessage || 'Generating witty remark...'}
             </p>
         )}
 
