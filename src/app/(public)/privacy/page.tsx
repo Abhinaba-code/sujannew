@@ -1,4 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Heart } from 'lucide-react';
 
 export default function PrivacyPage() {
   return (
@@ -44,6 +46,11 @@ export default function PrivacyPage() {
             We may update this Privacy Policy from time to time. Any changes will be posted on this page.
           </p>
         </CardContent>
+        <CardFooter className="bg-muted/50 p-4 justify-center">
+            <p className="text-sm text-muted-foreground flex items-center gap-1.5">
+                Made with <Heart className="h-4 w-4 text-red-500" /> by Abhinaba Roy Pradhan and Sujan Roy
+            </p>
+        </CardFooter>
       </Card>
     </div>
   );

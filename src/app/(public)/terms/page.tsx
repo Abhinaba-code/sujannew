@@ -1,4 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Heart } from 'lucide-react';
 
 export default function TermsPage() {
   return (
@@ -44,6 +46,11 @@ export default function TermsPage() {
             We reserve the right to modify or replace these Terms at any time. We will provide notice of any changes by posting the new Terms on this page.
           </p>
         </CardContent>
+        <CardFooter className="bg-muted/50 p-4 justify-center">
+            <p className="text-sm text-muted-foreground flex items-center gap-1.5">
+                Made with <Heart className="h-4 w-4 text-red-500" /> by Abhinaba Roy Pradhan and Sujan Roy
+            </p>
+        </CardFooter>
       </Card>
     </div>
   );

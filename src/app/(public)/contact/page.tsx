@@ -1,6 +1,7 @@
+
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Mail } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Mail, Heart } from 'lucide-react';
 
 export default function ContactPage() {
   return (
@@ -20,6 +21,11 @@ export default function ContactPage() {
                     <Mail className="mr-2 h-4 w-4" /> Email Support
                 </Button>
             </CardContent>
+            <CardFooter className="bg-muted/50 p-4 justify-center">
+                <p className="text-sm text-muted-foreground flex items-center gap-1.5">
+                    Made with <Heart className="h-4 w-4 text-red-500" /> by Abhinaba Roy Pradhan and Sujan Roy
+                </p>
+            </CardFooter>
         </Card>
     </div>
   );

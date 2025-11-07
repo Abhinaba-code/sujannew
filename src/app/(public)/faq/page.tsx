@@ -1,10 +1,12 @@
+
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Heart } from 'lucide-react';
 
 export default function FaqPage() {
   return (
@@ -47,6 +49,11 @@ export default function FaqPage() {
                     </AccordionItem>
                 </Accordion>
             </CardContent>
+            <CardFooter className="bg-muted/50 p-4 justify-center">
+                <p className="text-sm text-muted-foreground flex items-center gap-1.5">
+                    Made with <Heart className="h-4 w-4 text-red-500" /> by Abhinaba Roy Pradhan and Sujan Roy
+                </p>
+            </CardFooter>
         </Card>
     </div>
   );

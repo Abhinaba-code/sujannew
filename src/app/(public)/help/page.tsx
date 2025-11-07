@@ -1,5 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { HelpCircle, LifeBuoy, Book } from 'lucide-react';
+
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { HelpCircle, LifeBuoy, Book, Heart } from 'lucide-react';
 
 export default function HelpPage() {
   return (
@@ -28,6 +29,11 @@ export default function HelpPage() {
                 <p>Because all your data is stored in your browser's local storage, clearing your browser's cache or data for this website will result in the permanent loss of all your notes, tasks, and flashcards. Please be careful and consider exporting important information periodically if needed.</p>
             </div>
         </CardContent>
+        <CardFooter className="bg-muted/50 p-4 justify-center">
+            <p className="text-sm text-muted-foreground flex items-center gap-1.5">
+                Made with <Heart className="h-4 w-4 text-red-500" /> by Abhinaba Roy Pradhan and Sujan Roy
+            </p>
+        </CardFooter>
       </Card>
     </div>
   );

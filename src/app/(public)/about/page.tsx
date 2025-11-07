@@ -1,4 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Heart } from 'lucide-react';
 
 export default function AboutPage() {
   return (
@@ -18,6 +20,11 @@ export default function AboutPage() {
                     We are committed to providing a free, high-quality tool that helps you focus on what matters most: your learning journey.
                 </p>
             </CardContent>
+            <CardFooter className="bg-muted/50 p-4 justify-center">
+                <p className="text-sm text-muted-foreground flex items-center gap-1.5">
+                    Made with <Heart className="h-4 w-4 text-red-500" /> by Abhinaba Roy Pradhan and Sujan Roy
+                </p>
+            </CardFooter>
         </Card>
     </div>
   );
