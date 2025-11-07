@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { BrainCircuit, BookOpen, ClipboardList, Calendar, Timer, Wand2 } from 'lucide-react';
+import { GraduationCap, BookOpen, ClipboardList, Calendar, Timer, Wand2 } from 'lucide-react';
 
 const features = [
   { icon: BookOpen, text: 'Detailed Notes' },
@@ -23,7 +23,7 @@ export default function LandingPage() {
     <div className="flex flex-col min-h-screen">
       <header className="px-4 lg:px-6 h-16 flex items-center bg-background/80 backdrop-blur-lg border-b sticky top-0 z-10">
         <Link href="/" className="flex items-center justify-center">
-          <BrainCircuit className="h-6 w-6 text-primary" />
+          <GraduationCap className="h-6 w-6 text-primary" />
           <span className="ml-2 font-semibold font-headline">StudyMate Lite</span>
         </Link>
         <nav className="ml-auto hidden md:flex gap-4 sm:gap-6 items-center">
@@ -38,7 +38,7 @@ export default function LandingPage() {
             <Link href="/login">Login</Link>
           </Button>
           <Button asChild>
-            <Link href="/signup">Sign Up</Link>
+            <Link href="/signup">Sign Up</Link>_
           </Button>
         </div>
       </header>
@@ -65,7 +65,7 @@ export default function LandingPage() {
                 </div>
               </div>
               <div className="hidden lg:flex items-center justify-center">
-                  <BrainCircuit className="h-48 w-48 text-primary/10" strokeWidth={0.5} />
+                  <GraduationCap className="h-48 w-48 text-primary/10" strokeWidth={0.5} />
                   <Wand2 className="absolute h-32 w-32 text-primary/20 animate-pulse" strokeWidth={1} />
                   <BookOpen className="absolute h-40 w-40 text-primary/15 animate-pulse delay-500" strokeWidth={1} />
               </div>

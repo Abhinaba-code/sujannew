@@ -24,7 +24,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { BrainCircuit } from 'lucide-react';
+import { GraduationCap } from 'lucide-react';
 
 const formSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -51,7 +51,7 @@ export default function LoginPage() {
     <Card className="glassmorphism">
       <CardHeader className="text-center">
          <div className="flex justify-center items-center gap-2 mb-2">
-           <BrainCircuit className="h-8 w-8 text-primary" />
+           <GraduationCap className="h-8 w-8 text-primary" />
            <CardTitle className="text-3xl font-headline">StudyMate Lite</CardTitle>
          </div>
         <CardDescription>Log in to your local study hub</CardDescription>

@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import {
   Bell,
   BookOpen,
-  BrainCircuit,
+  GraduationCap,
   Calendar,
   ClipboardList,
   Home,
@@ -72,7 +72,7 @@ export function AppSidebar({ isMobile = false }) {
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-16 items-center border-b px-4 lg:px-6">
             <Link href="/" className="flex items-center gap-2 font-semibold">
-              <BrainCircuit className="h-6 w-6 text-primary" />
+              <GraduationCap className="h-6 w-6 text-primary" />
               <span className="">StudyMate Lite</span>
             </Link>
             <Button variant="outline" size="icon" className="ml-auto h-8 w-8">
