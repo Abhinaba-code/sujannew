@@ -11,6 +11,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Label } from '@/components/ui/label';
 import { generateTrollMessage } from '@/ai/flows/generate-troll-message';
 import { useToast } from '@/hooks/use-toast';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 type Question = {
   category: string;
@@ -404,7 +415,23 @@ export default function QuizzesPage() {
         </div>
       </CardContent>
       <CardFooter className="justify-between">
-          <Button variant="ghost" onClick={restartQuiz}>Quit Quiz</Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="ghost">Quit Quiz</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure you want to quit?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Your current progress will be lost. You can't undo this action.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={restartQuiz}>Continue</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
           {isAnswered && (
              <Button onClick={handleNextQuestion}>
                 {currentQuestionIndex === questions.length - 1 ? 'Finish Quiz' : 'Next Question'}
