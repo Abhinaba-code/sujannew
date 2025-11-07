@@ -1,6 +1,7 @@
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState, useState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { generateFlashcardsAction } from '@/lib/actions';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -10,7 +11,6 @@ import { Loader2, Wand2, PartyPopper } from 'lucide-react';
 import type { Flashcard, FlashcardDeck } from '@/lib/types';
 import { useAuth } from '@/hooks/use-auth';
 import { Input } from '../ui/input';
-import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
 const initialState = {
@@ -37,7 +37,7 @@ function SubmitButton() {
 }
 
 export function FlashcardGenerator() {
-  const [state, formAction] = useFormState(generateFlashcardsAction, initialState);
+  const [state, formAction] = useActionState(generateFlashcardsAction, initialState);
   const { user, updateUserData } = useAuth();
   const [deckName, setDeckName] = useState('');
   const { toast } = useToast();
