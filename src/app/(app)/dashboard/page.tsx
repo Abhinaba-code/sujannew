@@ -13,18 +13,45 @@ const navCards = [
     { title: "Pomodoro", icon: Timer, href: "/pomodoro", description: "Focus with the timer" },
 ];
 
-type Quote = {
-  q: string;
-  a: string;
+type WikiArticle = {
+  title: string;
+  extract: string;
+  originalimage?: {
+    source: string;
+  };
+  content_urls: {
+    desktop: {
+      page: string;
+    };
+  };
 };
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const [quote, setQuote] = useState<Quote | null>(null);
+  const [article, setArticle] = useState<WikiArticle | null>(null);
 
   useEffect(() => {
-    // Fallback quote
-    setQuote({ q: "The secret of getting ahead is getting started.", a: "Mark Twain" });
+    async function fetchFeaturedArticle() {
+      try {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = (today.getMonth() + 1).toString().padStart(2, '0');
+        const day = today.getDate().toString().padStart(2, '0');
+        const response = await fetch(`https://api.wikimedia.org/feed/v1/wikipedia/en/featured/${year}/${month}/${day}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch article');
+        }
+        const data = await response.json();
+        // tfa is "Today's Featured Article"
+        if (data.tfa) {
+            setArticle(data.tfa);
+        }
+      } catch (error) {
+        console.error("Error fetching Wikipedia article:", error);
+      }
+    }
+
+    fetchFeaturedArticle();
   }, []);
 
   return (
@@ -34,11 +61,16 @@ export default function Dashboard() {
         <p className="text-muted-foreground">Ready to be productive today?</p>
       </div>
 
-      {quote && (
+      {article && (
           <Card className="glassmorphism">
+            <CardHeader>
+                <CardTitle>Today's Featured Article: {article.title}</CardTitle>
+            </CardHeader>
               <CardContent className="p-6">
-                  <blockquote className="text-lg italic">"{quote.q}"</blockquote>
-                  <p className="text-right mt-2 font-medium text-primary">- {quote.a}</p>
+                  <p className="text-muted-foreground line-clamp-3">{article.extract}</p>
+                  <a href={article.content_urls.desktop.page} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline mt-2 inline-block">
+                    Read more on Wikipedia
+                  </a>
               </CardContent>
           </Card>
       )}
