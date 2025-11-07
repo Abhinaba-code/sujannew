@@ -25,6 +25,8 @@ export default function EditProfilePage() {
   const { user, updateUserData } = useAuth();
   const { toast } = useToast();
   const router = useRouter();
+  
+  const isInitialSetup = !user?.data.name;
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
@@ -40,18 +42,24 @@ export default function EditProfilePage() {
   function onSubmit(data: ProfileFormValues) {
     updateUserData(data);
     toast({
-      title: "Profile Updated",
-      description: "Your details have been successfully saved.",
+      title: isInitialSetup ? "Profile Created!" : "Profile Updated",
+      description: isInitialSetup 
+        ? "Welcome! You can now explore the app."
+        : "Your details have been successfully saved.",
     });
-    router.push('/profile');
+    router.push('/dashboard');
   }
 
   return (
     <div className="max-w-3xl mx-auto">
         <Card>
             <CardHeader>
-                <CardTitle>Edit Profile</CardTitle>
-                <CardDescription>Update your personal information.</CardDescription>
+                <CardTitle>{isInitialSetup ? "Complete Your Profile" : "Edit Profile"}</CardTitle>
+                <CardDescription>
+                    {isInitialSetup 
+                        ? "Please fill in your details to continue." 
+                        : "Update your personal information."}
+                </CardDescription>
             </CardHeader>
             <CardContent>
                 <Form {...form}>
@@ -124,7 +132,7 @@ export default function EditProfilePage() {
                             />
                         </div>
                         <div className="flex justify-end gap-2">
-                             <Button type="button" variant="ghost" onClick={() => router.back()}>Cancel</Button>
+                             {!isInitialSetup && <Button type="button" variant="ghost" onClick={() => router.back()}>Cancel</Button>}
                             <Button type="submit">Save Changes</Button>
                         </div>
                     </form>

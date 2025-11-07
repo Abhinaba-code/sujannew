@@ -18,13 +18,24 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    // If not loading and no user, redirect to landing page if they are not already on a public page.
-    if (isClient && !isLoading && !user && !['/login', '/signup', '/'].includes(pathname)) {
-      router.push('/');
+    if (isLoading || !isClient) return;
+
+    // If no user, redirect to landing page (unless it's a public auth page)
+    if (!user) {
+      if (!['/login', '/signup', '/'].includes(pathname)) {
+        router.push('/');
+      }
+      return;
+    }
+
+    // If user exists but hasn't filled out their name, force them to the edit page
+    const hasUserDetails = user.data.name && user.data.name.trim() !== '';
+    if (!hasUserDetails && pathname !== '/profile/edit') {
+      router.push('/profile/edit');
     }
   }, [user, isLoading, router, isClient, pathname]);
 
-  if (!isClient || isLoading) {
+  if (!isClient || isLoading || !user) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
@@ -32,18 +43,15 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     );
   }
   
-  // For public pages, we don't want the app layout if the user is not logged in.
-  if (!user && ['/login', '/signup', '/'].includes(pathname)) {
-      return <>{children}</>;
-  }
-
-  // If we are on a client, but still no user, show a loader while redirecting.
-  if (!user) {
-    return (
-      <div className="flex h-screen w-full items-center justify-center">
-        <Loader2 className="h-12 w-12 animate-spin text-primary" />
-      </div>
-    );
+  // Special case for the edit page to show a limited layout
+  if (!user.data.name && pathname === '/profile/edit') {
+      return (
+          <main className="flex min-h-screen flex-col items-center justify-center p-4">
+              <div className="w-full max-w-3xl">
+                  {children}
+              </div>
+          </main>
+      );
   }
 
   return (
