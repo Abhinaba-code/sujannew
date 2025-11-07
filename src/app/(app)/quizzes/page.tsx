@@ -30,10 +30,14 @@ type Category = {
     name: string;
 }
 
+type Difficulty = 'easy' | 'medium' | 'hard';
+
+type ClassLevel = 'elementary' | 'middle' | 'high' | 'university';
+
 type QuizSettings = {
     amount: number;
     category: string;
-    difficulty: 'easy' | 'medium' | 'hard';
+    classLevel: ClassLevel;
 }
 
 // Function to decode HTML entities
@@ -45,6 +49,14 @@ function decodeHtml(html: string) {
     txt.innerHTML = html;
     return txt.value;
 }
+
+const classLevelToDifficulty: Record<ClassLevel, Difficulty> = {
+    elementary: 'easy',
+    middle: 'medium',
+    high: 'hard',
+    university: 'hard',
+};
+
 
 export default function QuizzesPage() {
   const { user } = useAuth();
@@ -61,7 +73,7 @@ export default function QuizzesPage() {
   const [settings, setSettings] = useState<QuizSettings>({
       amount: 10,
       category: 'any',
-      difficulty: 'medium',
+      classLevel: 'middle',
   });
 
   useEffect(() => {
@@ -83,7 +95,8 @@ export default function QuizzesPage() {
     setError(null);
     setQuizState('playing');
     
-    const { amount, category, difficulty } = settings;
+    const { amount, category, classLevel } = settings;
+    const difficulty = classLevelToDifficulty[classLevel];
     const categoryParam = category === 'any' ? '' : `&category=${category}`;
 
     try {
@@ -173,6 +186,18 @@ export default function QuizzesPage() {
                     </Select>
                 </div>
                  <div className="space-y-2">
+                    <Label htmlFor="class-level">Class Level (sets difficulty)</Label>
+                     <Select value={settings.classLevel} onValueChange={(val) => setSettings(s => ({...s, classLevel: val as ClassLevel}))}>
+                        <SelectTrigger id="class-level"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="elementary">Elementary (Easy)</SelectItem>
+                            <SelectItem value="middle">Middle School (Medium)</SelectItem>
+                            <SelectItem value="high">High School (Hard)</SelectItem>
+                            <SelectItem value="university">University (Hard)</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+                 <div className="space-y-2">
                     <Label htmlFor="category">Category</Label>
                     <Select value={settings.category} onValueChange={(val) => setSettings(s => ({...s, category: val}))}>
                         <SelectTrigger id="category"><SelectValue /></SelectTrigger>
@@ -181,17 +206,6 @@ export default function QuizzesPage() {
                             {categories.map(cat => (
                                 <SelectItem key={cat.id} value={String(cat.id)}>{cat.name}</SelectItem>
                             ))}
-                        </SelectContent>
-                    </Select>
-                </div>
-                 <div className="space-y-2">
-                    <Label htmlFor="difficulty">Difficulty</Label>
-                     <Select value={settings.difficulty} onValueChange={(val) => setSettings(s => ({...s, difficulty: val as any}))}>
-                        <SelectTrigger id="difficulty"><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="easy">Easy</SelectItem>
-                            <SelectItem value="medium">Medium</SelectItem>
-                            <SelectItem value="hard">Hard</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
