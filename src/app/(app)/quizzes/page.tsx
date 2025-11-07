@@ -94,6 +94,8 @@ export default function QuizzesPage() {
   const [showSurvivalMessage, setShowSurvivalMessage] = useState(false);
   const [trollMessage, setTrollMessage] = useState('');
   const { toast } = useToast();
+  const [isCoolingDown, setIsCoolingDown] = useState(false);
+
 
   const questionTimerDuration = useMemo(() => {
     switch (settings.difficulty) {
@@ -236,12 +238,14 @@ export default function QuizzesPage() {
     }
   };
 
-  const restartQuiz = () => {
-    if (quizState === 'playing' && ['medium', 'hard', 'super-hard'].includes(settings.difficulty)) {
+  const restartQuiz = (isQuit: boolean = false) => {
+    if (isQuit && ['medium', 'hard', 'super-hard'].includes(settings.difficulty)) {
         toast({
             variant: 'destructive',
             title: 'You are a Big NOOB 👎😂😂😂',
         });
+        setIsCoolingDown(true);
+        setTimeout(() => setIsCoolingDown(false), 2000);
     }
     setQuizState('settings');
     setQuestions([]);
@@ -322,8 +326,8 @@ export default function QuizzesPage() {
                 </div>
             </CardContent>
             <CardFooter>
-                 <Button onClick={fetchQuestions} disabled={isLoading} className="w-full">
-                    {isLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin"/> Starting...</> : 'Start Quiz'}
+                 <Button onClick={fetchQuestions} disabled={isLoading || isCoolingDown} className="w-full">
+                    {isLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin"/> Starting...</> : (isCoolingDown ? 'Wait...' : 'Start Quiz')}
                 </Button>
             </CardFooter>
         </Card>
@@ -341,7 +345,7 @@ export default function QuizzesPage() {
           <p className="text-4xl font-bold">Your Score: {score} / {questions.length}</p>
         </CardContent>
         <CardFooter>
-          <Button onClick={restartQuiz} className="mx-auto">
+          <Button onClick={() => restartQuiz(false)} className="mx-auto">
             <RefreshCw className="mr-2 h-4 w-4" /> Play Again
           </Button>
         </CardFooter>
@@ -428,7 +432,7 @@ export default function QuizzesPage() {
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={restartQuiz}>Continue</AlertDialogAction>
+                <AlertDialogAction onClick={() => restartQuiz(true)}>Continue</AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
