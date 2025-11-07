@@ -46,7 +46,7 @@ export default function LoginPage() {
     async function fetchQuote() {
       try {
         // ZenQuotes API has CORS issues, so we use a proxy.
-        const response = await fetch('https://cors-anywhere.herokuapp.com/https://zenquotes.io/api/random');
+        const response = await fetch('https://zenquotes.io/api/random');
         if (!response.ok) {
             // Fallback quote
             setQuote({ q: "The secret to getting ahead is getting started.", a: "Mark Twain" });

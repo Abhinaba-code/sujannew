@@ -16,7 +16,7 @@ export function MotivationalQuote() {
   const fetchQuote = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('https://cors-anywhere.herokuapp.com/https://zenquotes.io/api/random');
+      const response = await fetch('https://zenquotes.io/api/random');
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
