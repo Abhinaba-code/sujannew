@@ -1,3 +1,4 @@
+
 export type Note = {
   id: string;
   title: string;
@@ -55,6 +56,11 @@ export type UserData = {
   city: string;
   state: string;
   country: string;
+  age: string;
+  studyClass: string;
+  favoriteSubject: string;
+  hobby: string;
+  futureAmbition: string;
   notes: Note[];
   tasks: Task[];
   timetable: TimetableEntry[];

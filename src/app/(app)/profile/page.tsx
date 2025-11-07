@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useAuth } from '@/hooks/use-auth';
@@ -5,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { Pencil, User, Mail, Phone, MapPin } from 'lucide-react';
+import { Pencil, User, Mail, Phone, MapPin, Hash, Book, Heart, Gamepad2, Rocket } from 'lucide-react';
 
 function ProfileDetail({ icon: Icon, label, value }: { icon: React.ElementType, label: string, value?: string }) {
     if (!value) return null;
@@ -47,9 +48,14 @@ export default function ProfilePage() {
                     <CardTitle className="text-xl mb-4">Personal Information</CardTitle>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                        <ProfileDetail icon={User} label="Full Name" value={data.name} />
+                       <ProfileDetail icon={Hash} label="Age" value={data.age} />
                        <ProfileDetail icon={Mail} label="Email" value={email} />
                        <ProfileDetail icon={Phone} label="Phone Number" value={data.phone} />
                        <ProfileDetail icon={MapPin} label="Location" value={location} />
+                       <ProfileDetail icon={Book} label="Class/Grade" value={data.studyClass} />
+                       <ProfileDetail icon={Heart} label="Favorite Subject" value={data.favoriteSubject} />
+                       <ProfileDetail icon={Gamepad2} label="Hobby" value={data.hobby} />
+                       <ProfileDetail icon={Rocket} label="Future Ambition" value={data.futureAmbition} />
                     </div>
                 </CardContent>
                 <CardContent className="flex justify-end gap-2">

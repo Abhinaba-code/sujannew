@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { createContext, useState, useEffect, useCallback, ReactNode } from 'react';
@@ -21,6 +22,11 @@ const initialUserData: UserData = {
   city: '',
   state: '',
   country: '',
+  age: '',
+  studyClass: '',
+  favoriteSubject: '',
+  hobby: '',
+  futureAmbition: '',
   notes: [],
   tasks: [],
   timetable: [],
