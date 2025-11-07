@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/use-auth';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
-import { BookOpen, Calendar, ClipboardList, Timer, Search as SearchIcon } from 'lucide-react';
+import { BookOpen, Calendar, ClipboardList, Timer, Search as SearchIcon, FileQuestion } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
@@ -13,6 +13,7 @@ const navCards = [
     { title: "Tasks", icon: ClipboardList, href: "/tasks", description: "Organize your to-do list" },
     { title: "Timetable", icon: Calendar, href: "/timetable", description: "Plan your study week" },
     { title: "Pomodoro", icon: Timer, href: "/pomodoro", description: "Focus with the timer" },
+    { title: "Quizzes", icon: FileQuestion, href: "/quizzes", description: "Test your knowledge" },
 ];
 
 type WikiArticle = {
@@ -101,7 +102,7 @@ export default function Dashboard() {
         )}
       </Card>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         {navCards.map((card) => (
           <Link href={card.href} key={card.title}>
             <Card className="hover:border-primary transition-colors hover:shadow-xl h-full">
