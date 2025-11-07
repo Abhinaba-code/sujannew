@@ -27,8 +27,8 @@ import {
 import { BrainCircuit } from 'lucide-react';
 
 const formSchema = z.object({
-  username: z.string().min(3, 'Username must be at least 3 characters'),
-  password: z.string().min(4, 'Password must be at least 4 characters'),
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(1, 'Password is required'),
 });
 
 export default function LoginPage() {
@@ -37,11 +37,12 @@ export default function LoginPage() {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { username: '', password: '' },
+    defaultValues: { email: '', password: '' },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    if (login(values.username, values.password)) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const success = await login(values.email, values.password);
+    if (success) {
       router.push('/dashboard');
     }
   }
@@ -60,12 +61,12 @@ export default function LoginPage() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="username"
+              name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your username" {...field} />
+                    <Input placeholder="Enter your email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

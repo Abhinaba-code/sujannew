@@ -23,27 +23,14 @@ export default function Dashboard() {
   const [quote, setQuote] = useState<Quote | null>(null);
 
   useEffect(() => {
-    async function fetchQuote() {
-      try {
-        const response = await fetch('https://zenquotes.io/api/random');
-        const data = await response.json();
-        setQuote(data[0]);
-      } catch (error) {
-        console.error("Failed to fetch quote", error);
-        setQuote({ q: "The secret of getting ahead is getting started.", a: "Mark Twain" });
-      }
-    }
-    // Using a proxy is needed for this API due to CORS policy
-    // For this example, we will just log the error and use a fallback.
-    // In a real app, you'd use a backend proxy.
-    // fetchQuote();
+    // Fallback quote
     setQuote({ q: "The secret of getting ahead is getting started.", a: "Mark Twain" });
   }, []);
 
   return (
     <div className="flex flex-col gap-8">
       <div>
-        <h1 className="text-3xl font-bold font-headline">Welcome back, {user?.username}!</h1>
+        <h1 className="text-3xl font-bold font-headline">Welcome back, {user?.data.name || user?.username}!</h1>
         <p className="text-muted-foreground">Ready to be productive today?</p>
       </div>
 

@@ -28,7 +28,12 @@ import { BrainCircuit } from 'lucide-react';
 
 const formSchema = z.object({
   username: z.string().min(3, 'Username must be at least 3 characters'),
-  password: z.string().min(4, 'Password must be at least 4 characters'),
+  email: z.string().email('Please enter a valid email address'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+  confirmPassword: z.string()
+}).refine(data => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
 });
 
 export default function SignupPage() {
@@ -37,11 +42,12 @@ export default function SignupPage() {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { username: '', password: '' },
+    defaultValues: { username: '', email: '', password: '', confirmPassword: '' },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    if (signup(values.username, values.password)) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const success = await signup(values.username, values.email, values.password);
+    if (success) {
       router.push('/login');
     }
   }
@@ -73,12 +79,38 @@ export default function SignupPage() {
             />
             <FormField
               control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter your email" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="password"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
                     <Input type="password" placeholder="Choose a password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+             <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm Password</FormLabel>
+                  <FormControl>
+                    <Input type="password" placeholder="Confirm your password" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

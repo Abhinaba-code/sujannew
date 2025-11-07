@@ -50,6 +50,11 @@ export type UserStats = {
 };
 
 export type UserData = {
+  name: string;
+  phone: string;
+  city: string;
+  state: string;
+  country: string;
   notes: Note[];
   tasks: Task[];
   timetable: TimetableEntry[];
@@ -60,6 +65,7 @@ export type UserData = {
 
 export type User = {
   username: string;
-  password?: string; // Only present during signup
+  email: string;
+  password?: string;
   data: UserData;
 };

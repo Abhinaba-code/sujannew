@@ -16,18 +16,31 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { LogOut, Menu, Search, Settings, User as UserIcon } from 'lucide-react';
 import { ThemeToggle } from './theme-toggle';
 import { AppSidebar } from './app-sidebar';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 const getTitleFromPath = (path: string) => {
-  const segment = path.split('/').pop() || 'dashboard';
-  if (segment === 'dashboard') return 'Dashboard';
-  return segment.charAt(0).toUpperCase() + segment.slice(1);
+  const segments = path.split('/').filter(Boolean);
+  const lastSegment = segments[segments.length - 1] || 'dashboard';
+  
+  if (lastSegment === 'dashboard') return 'Dashboard';
+  if (lastSegment === 'edit') {
+    const parentSegment = segments[segments.length - 2] || '';
+    return `Edit ${parentSegment.charAt(0).toUpperCase() + parentSegment.slice(1)}`;
+  }
+
+  return lastSegment.charAt(0).toUpperCase() + lastSegment.slice(1);
 }
 
 export function AppHeader() {
   const { user, logout } = useAuth();
   const pathname = usePathname();
+  const router = useRouter();
   const pageTitle = getTitleFromPath(pathname);
+
+  const handleLogout = () => {
+    logout();
+    router.push('/login');
+  };
 
   return (
     <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background/80 backdrop-blur-lg px-4 md:px-6">
@@ -71,7 +84,7 @@ export function AppHeader() {
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push('/profile')}>
               <UserIcon className="mr-2 h-4 w-4" />
               <span>Profile</span>
             </DropdownMenuItem>
@@ -80,7 +93,7 @@ export function AppHeader() {
               <span>Settings</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={logout}>
+            <DropdownMenuItem onClick={handleLogout}>
               <LogOut className="mr-2 h-4 w-4" />
               <span>Log out</span>
             </DropdownMenuItem>
