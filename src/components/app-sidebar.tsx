@@ -22,6 +22,7 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from '@/components/ui/tooltip';
+import { MotivationalQuote } from './motivational-quote';
 
 const navItems = [
   { href: '/dashboard', icon: Home, label: 'Dashboard' },
@@ -104,6 +105,11 @@ export function AppSidebar({ isMobile = false }) {
               navContent
             )}
           </div>
+          {!isMobile && (
+            <div className="mt-auto p-4">
+              <MotivationalQuote />
+            </div>
+          )}
         </div>
       </div>
     </TooltipProvider>
