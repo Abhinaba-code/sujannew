@@ -39,7 +39,7 @@ function ProfileDetail({ icon: Icon, label, value }: { icon: React.ElementType, 
 }
 
 export default function ProfilePage() {
-    const { user, deleteUser } = useAuth();
+    const { user, deleteUser, getUserPassword } = useAuth();
     const router = useRouter();
 
     const [deleteStep, setDeleteStep] = useState<'initial' | 'confirm_password' | 'countdown'>('initial');
@@ -65,11 +65,12 @@ export default function ProfilePage() {
         return <div>Loading...</div>;
     }
 
-    const { username, email, data, password } = user;
+    const { username, email, data } = user;
     const location = [data.city, data.state, data.country].filter(Boolean).join(', ');
     
     const handlePasswordConfirm = () => {
-        if (passwordInput === password) {
+        const storedPassword = getUserPassword(user.username);
+        if (passwordInput === storedPassword) {
             setPasswordError('');
             setDeleteStep('countdown');
         } else {

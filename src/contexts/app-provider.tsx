@@ -13,6 +13,7 @@ type AppContextType = {
   signup: (username: string, email: string, password_?: string) => Promise<boolean>;
   updateUserData: (data: Partial<UserData>) => void;
   deleteUser: () => void;
+  getUserPassword: (username: string) => string | undefined;
 };
 
 export const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -46,7 +47,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
-  const getUsersFromStorage = (): Record<string, Omit<User, 'email'>> => {
+  const getUsersFromStorage = (): Record<string, User> => {
     try {
       const usersRaw = localStorage.getItem('users');
       return usersRaw ? JSON.parse(usersRaw) : {};
@@ -54,8 +55,13 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       return {};
     }
   };
+  
+  const getUserPassword = (username: string): string | undefined => {
+    const allUsers = getUsersFromStorage();
+    return allUsers[username]?.password;
+  };
 
-  const saveUsersToStorage = (users: Record<string, Omit<User, 'email'>>) => {
+  const saveUsersToStorage = (users: Record<string, User>) => {
     localStorage.setItem('users', JSON.stringify(users));
   };
 
@@ -105,16 +111,17 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       return false;
     }
     
-    const newUser: Omit<User, 'email'> = { 
+    const newUser: User = { 
+        username,
+        email,
         password: password_, 
-        data: { ...initialUserData, name: username } 
+        data: { ...initialUserData, name: '' } 
     };
     allUsers[username] = newUser;
     saveUsersToStorage(allUsers);
     
-    const userToLogin: User = { username, email, ...newUser };
-    setUser(userToLogin);
-    localStorage.setItem('currentUser', userToLogin.email);
+    setUser(newUser);
+    localStorage.setItem('currentUser', newUser.email);
 
     toast({ title: 'Signup successful!', description: 'Welcome! Please complete your profile.' });
     return true;
@@ -137,8 +144,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       
       const allUsers = getUsersFromStorage();
       allUsers[currentUser.username] = { 
-        email: currentUser.email,
-        password: currentUser.password, 
+        ...allUsers[currentUser.username],
         data: newUserData 
       };
       saveUsersToStorage(allUsers);
@@ -161,7 +167,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   }, [user, toast]);
 
   return (
-    <AppContext.Provider value={{ user, isLoading, login, logout, signup, updateUserData, deleteUser }}>
+    <AppContext.Provider value={{ user, isLoading, login, logout, signup, updateUserData, deleteUser, getUserPassword }}>
       {children}
     </AppContext.Provider>
   );
