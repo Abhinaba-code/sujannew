@@ -23,7 +23,7 @@ import { useRef } from 'react';
 import Link from 'next/link';
 
 export default function SettingsPage() {
-    const { user, updateUserData, logout } = useAuth();
+    const { user, updateUserData } = useAuth();
     const { toast } = useToast();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
