@@ -67,7 +67,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     try {
-      const loggedInUserEmail = localStorage.getItem('currentUser');
+      const loggedInUserEmail = sessionStorage.getItem('currentUser');
       if (loggedInUserEmail) {
         const allUsers = getUsersFromStorage();
         // Find user by email
@@ -78,7 +78,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         }
       }
     } catch (error) {
-      console.error("Failed to load user from localStorage", error);
+      console.error("Failed to load user from sessionStorage", error);
     } finally {
       setIsLoading(false);
     }
@@ -92,8 +92,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       const [username, userData] = foundUserEntry;
       const userToLogin: User = { username, ...userData };
       setUser(userToLogin);
-      localStorage.setItem('currentUser', userToLogin.email);
-      toast({ title: 'Login successful', description: `Welcome back, ${userToLogin.username}!` });
+      sessionStorage.setItem('currentUser', userToLogin.email);
+      toast({ title: 'Login successful', description: `Welcome back, ${userToLogin.data.name || userToLogin.username}!` });
       return true;
     }
     toast({ variant: 'destructive', title: 'Login Failed', description: 'Invalid email or password.' });
@@ -121,7 +121,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     saveUsersToStorage(allUsers);
     
     setUser(newUser);
-    localStorage.setItem('currentUser', newUser.email);
+    sessionStorage.setItem('currentUser', newUser.email);
 
     toast({ title: 'Signup successful!', description: 'Welcome! Please complete your profile.' });
     return true;
@@ -129,7 +129,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = useCallback(() => {
     setUser(null);
-    localStorage.removeItem('currentUser');
+    sessionStorage.removeItem('currentUser');
     toast({ title: 'Logged out' });
   }, [toast]);
   
@@ -162,7 +162,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     saveUsersToStorage(allUsers);
 
     setUser(null);
-    localStorage.removeItem('currentUser');
+    sessionStorage.removeItem('currentUser');
     toast({ variant: 'destructive', title: 'Account Deleted', description: 'Your account has been permanently removed.' });
   }, [user, toast]);
 

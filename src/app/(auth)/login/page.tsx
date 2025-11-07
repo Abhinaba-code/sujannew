@@ -39,7 +39,7 @@ type Quote = {
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login } = useAuth();
+  const { login, user } = useAuth();
   const [quote, setQuote] = useState<Quote | null>(null);
 
   useEffect(() => {
@@ -58,6 +58,12 @@ export default function LoginPage() {
       router.push('/dashboard');
     }
   }
+
+  useEffect(() => {
+    if (user) {
+      router.push('/dashboard');
+    }
+  }, [user, router]);
 
   return (
     <Card className="glassmorphism">
