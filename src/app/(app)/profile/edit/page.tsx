@@ -14,7 +14,7 @@ import { useRouter } from 'next/navigation';
 import { Textarea } from '@/components/ui/textarea';
 
 const profileFormSchema = z.object({
-  name: z.string().min(1, 'Name is required').max(50, 'Name must be 50 characters or less'),
+  name: z.string().min(1, 'Name is required').max(50, 'Name must be 50 characters or less').regex(/^[a-zA-Z\s'-]+$/, 'Full name cannot contain numbers or special characters.'),
   phone: z.string().min(1, 'Phone number is required'),
   city: z.string().min(1, 'City is required'),
   state: z.string().min(1, 'State is required'),
