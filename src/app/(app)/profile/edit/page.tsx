@@ -12,7 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 
 const profileFormSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
+  name: z.string().min(1, 'Name is required').max(50, 'Name must be 50 characters or less'),
   phone: z.string().optional(),
   city: z.string().optional(),
   state: z.string().optional(),
@@ -37,9 +37,11 @@ export default function EditProfilePage() {
       state: user?.data.state || '',
       country: user?.data.country || '',
     },
+    mode: 'onChange',
   });
 
   function onSubmit(data: ProfileFormValues) {
+    if (!user) return;
     updateUserData(data);
     toast({
       title: isInitialSetup ? "Profile Created!" : "Profile Updated",
@@ -47,18 +49,19 @@ export default function EditProfilePage() {
         ? "Welcome! You can now explore the app."
         : "Your details have been successfully saved.",
     });
-    router.push('/dashboard');
+    const destination = isInitialSetup ? '/dashboard' : '/profile';
+    router.push(destination);
   }
 
   return (
     <div className="max-w-3xl mx-auto">
         <Card>
             <CardHeader>
-                <CardTitle>{isInitialSetup ? "Complete Your Profile" : "Edit Profile"}</CardTitle>
+                <CardTitle>{isInitialSetup ? "Welcome! Complete Your Profile" : "Edit Profile"}</CardTitle>
                 <CardDescription>
                     {isInitialSetup 
-                        ? "Please fill in your details to continue." 
-                        : "Update your personal information."}
+                        ? "Please fill in your name to get started." 
+                        : "Update your personal information below."}
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -71,7 +74,7 @@ export default function EditProfilePage() {
                             <FormItem>
                             <FormLabel>Full Name</FormLabel>
                             <FormControl>
-                                <Input placeholder="Your full name" {...field} />
+                                <Input placeholder="e.g. Jane Doe" {...field} />
                             </FormControl>
                             <FormMessage />
                             </FormItem>
@@ -84,7 +87,7 @@ export default function EditProfilePage() {
                             <FormItem>
                             <FormLabel>Phone Number</FormLabel>
                             <FormControl>
-                                <Input placeholder="Your phone number" {...field} />
+                                <Input placeholder="(123) 456-7890" {...field} />
                             </FormControl>
                             <FormMessage />
                             </FormItem>
@@ -98,7 +101,7 @@ export default function EditProfilePage() {
                                 <FormItem>
                                 <FormLabel>City</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="City" {...field} />
+                                    <Input placeholder="e.g. San Francisco" {...field} />
                                 </FormControl>
                                 <FormMessage />
                                 </FormItem>
@@ -111,7 +114,7 @@ export default function EditProfilePage() {
                                 <FormItem>
                                 <FormLabel>State / Province</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="State or Province" {...field} />
+                                    <Input placeholder="e.g. California" {...field} />
                                 </FormControl>
                                 <FormMessage />
                                 </FormItem>
@@ -124,16 +127,18 @@ export default function EditProfilePage() {
                                 <FormItem>
                                 <FormLabel>Country</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Country" {...field} />
+                                    <Input placeholder="e.g. USA" {...field} />
                                 </FormControl>
                                 <FormMessage />
                                 </FormItem>
                             )}
                             />
                         </div>
-                        <div className="flex justify-end gap-2">
-                             {!isInitialSetup && <Button type="button" variant="ghost" onClick={() => router.back()}>Cancel</Button>}
-                            <Button type="submit">Save Changes</Button>
+                        <div className="flex justify-end gap-2 pt-4">
+                             {!isInitialSetup && <Button type="button" variant="outline" onClick={() => router.push('/profile')}>Cancel</Button>}
+                            <Button type="submit">
+                                {isInitialSetup ? "Continue" : "Save Changes"}
+                            </Button>
                         </div>
                     </form>
                 </Form>
