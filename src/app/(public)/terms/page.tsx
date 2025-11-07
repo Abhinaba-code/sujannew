@@ -11,17 +11,17 @@ export default function TermsPage() {
           <p><strong>Last Updated: {new Date().toLocaleDateString()}</strong></p>
 
           <p>
-            Please read these Terms and Conditions ("Terms") carefully before using the StudyBrain application (the "Service"). Your access to and use of the Service is conditioned upon your acceptance of and compliance with these Terms.
+            Please read these Terms and Conditions ("Terms") carefully before using the StudyMate Lite application (the "Service"). Your access to and use of the Service is conditioned upon your acceptance of and compliance with these Terms.
           </p>
 
           <h3>1. Use of Service</h3>
           <p>
-            StudyBrain is provided for your personal, non-commercial use. You agree not to use the service for any illegal or unauthorized purpose.
+            StudyMate Lite is provided for your personal, non-commercial use. You agree not to use the service for any illegal or unauthorized purpose.
           </p>
 
           <h3>2. Data Responsibility</h3>
           <p>
-            All data you create is stored locally on your device. You are solely responsible for managing and backing up your data. The developers of StudyBrain are not liable for any data loss or corruption.
+            All data you create is stored locally on your device. You are solely responsible for managing and backing up your data. The developers of StudyMate Lite are not liable for any data loss or corruption.
           </p>
 
           <h3>3. AI Feature Usage</h3>
@@ -36,7 +36,7 @@ export default function TermsPage() {
 
           <h3>5. Limitation of Liability</h3>
           <p>
-            In no event shall the developers of StudyBrain be liable for any indirect, incidental, special, consequential or punitive damages, including without limitation, loss of profits, data, or other intangible losses, resulting from your use of the service.
+            In no event shall the developers of StudyMate Lite be liable for any indirect, incidental, special, consequential or punitive damages, including without limitation, loss of profits, data, or other intangible losses, resulting from your use of the service.
           </p>
 
           <h3>6. Changes to Terms</h3>

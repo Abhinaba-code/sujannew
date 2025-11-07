@@ -11,12 +11,12 @@ export default function PrivacyPage() {
           <p><strong>Last Updated: {new Date().toLocaleDateString()}</strong></p>
           
           <p>
-            Your privacy is our top priority. This Privacy Policy explains how StudyBrain handles your information. By using our application, you agree to the terms of this policy.
+            Your privacy is our top priority. This Privacy Policy explains how StudyMate Lite handles your information. By using our application, you agree to the terms of this policy.
           </p>
 
           <h3>1. Data Storage</h3>
           <p>
-            All data you create and use within StudyBrain, including notes, tasks, schedules, and flashcards, is stored exclusively in your web browser's local storage on your device.
+            All data you create and use within StudyMate Lite, including notes, tasks, schedules, and flashcards, is stored exclusively in your web browser's local storage on your device.
           </p>
 
           <h3>2. Data Collection</h3>
@@ -36,7 +36,7 @@ export default function PrivacyPage() {
 
           <h3>5. Cookies</h3>
           <p>
-            StudyBrain does not use tracking cookies. We only use essential local storage to save your application state and data.
+            StudyMate Lite does not use tracking cookies. We only use essential local storage to save your application state and data.
           </p>
 
           <h3>6. Changes to This Policy</h3>
