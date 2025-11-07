@@ -296,7 +296,7 @@ export default function QuizzesPage() {
                             <SelectItem value="60">1 Minute</SelectItem>
                             <SelectItem value="300">5 Minutes</SelectItem>
                             <SelectItem value="600">10 Minutes</SelectItem>
-                            <SelectItem value="3600">60 Minutes</SelectItem>
+                            <SelectItem value="1800">30 Minutes</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
