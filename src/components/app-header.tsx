@@ -17,6 +17,7 @@ import { LogOut, Menu, Search, Settings, User as UserIcon } from 'lucide-react';
 import { ThemeToggle } from './theme-toggle';
 import { AppSidebar } from './app-sidebar';
 import { usePathname, useRouter } from 'next/navigation';
+import { WorldClock } from './world-clock';
 
 const getTitleFromPath = (path: string) => {
   const segments = path.split('/').filter(Boolean);
@@ -72,8 +73,9 @@ export function AppHeader() {
       <h1 className="text-xl font-semibold md:text-2xl font-headline">{pageTitle}</h1>
 
       <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-        <div className="ml-auto flex-1 sm:flex-initial">
-          <div className="relative">
+        <div className="ml-auto flex items-center gap-4">
+           <WorldClock />
+          <div className="relative flex-1 sm:flex-initial">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
