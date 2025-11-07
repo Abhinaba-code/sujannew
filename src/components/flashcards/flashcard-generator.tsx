@@ -64,7 +64,7 @@ export function FlashcardGenerator() {
   };
 
   return (
-    <div className="grid gap-8 md:grid-cols-2">
+    <div className="grid gap-8 md:grid-cols-1 lg:grid-cols-2">
       <Card className="glassmorphism">
         <CardHeader>
           <CardTitle>AI Flashcard Generator</CardTitle>
@@ -98,13 +98,14 @@ export function FlashcardGenerator() {
             <div className="space-y-4">
                <div className="flex items-center gap-2 p-4 bg-green-100 dark:bg-green-900/50 rounded-lg">
                 <PartyPopper className="h-6 w-6 text-green-600 dark:text-green-400" />
-                <p className="font-medium text-green-800 dark:text-green-200">Success! Here are your new flashcards. Name your deck and save it.</p>
+                <p className="font-medium text-green-800 dark:text-green-200">Success! Name your deck and save it.</p>
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <Input 
                   placeholder="Enter new deck name..." 
                   value={deckName} 
                   onChange={(e) => setDeckName(e.target.value)}
+                  className="flex-grow"
                 />
                 <Button onClick={handleSaveDeck}>Save Deck</Button>
               </div>

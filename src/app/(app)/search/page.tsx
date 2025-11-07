@@ -203,7 +203,7 @@ export default function SearchPage() {
             {searchedArticle ? (
                 <div className="pt-4 border-t">
                 <h3 className="text-xl font-semibold mb-2">{searchedArticle.title}</h3>
-                <p className="text-muted-foreground line-clamp-4">{searchedArticle.extract}</p>
+                <p className="text-muted-foreground line-clamp-3 sm:line-clamp-4">{searchedArticle.extract}</p>
                 <a href={searchedArticle.content_urls.desktop.page} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline mt-2 inline-block">
                     Read more on Wikipedia
                 </a>

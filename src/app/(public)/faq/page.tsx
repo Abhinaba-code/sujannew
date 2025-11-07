@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function FaqPage() {
   return (
-    <div className="container mx-auto py-12 md:py-24 lg:py-32 px-4 md:px-6">
+    <div className="container mx-auto py-12 sm:py-24 px-4 md:px-6">
         <Card className="max-w-3xl mx-auto">
             <CardHeader>
                 <CardTitle className="text-3xl font-bold tracking-tighter sm:text-5xl text-center">Frequently Asked Questions</CardTitle>
@@ -18,7 +18,7 @@ export default function FaqPage() {
                     <AccordionItem value="item-1">
                         <AccordionTrigger>Is my data secure?</AccordionTrigger>
                         <AccordionContent>
-                        Absolutely. StudyMate Lite stores all your data locally on your device in your browser's local storage. Nothing is ever sent to a server, ensuring your notes, tasks, and study materials remain completely private.
+                        Absolutely. StudyBrain stores all your data locally on your device in your browser's local storage. Nothing is ever sent to a server, ensuring your notes, tasks, and study materials remain completely private.
                         </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="item-2">
@@ -28,9 +28,9 @@ export default function FaqPage() {
                         </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="item-3">
-                        <AccordionTrigger>Is there a cost to use StudyMate Lite?</AccordionTrigger>
+                        <AccordionTrigger>Is there a cost to use StudyBrain?</AccordionTrigger>
                         <AccordionContent>
-                        StudyMate Lite is completely free to use. We believe in providing accessible tools for all students.
+                        StudyBrain is completely free to use. We believe in providing accessible tools for all students.
                         </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="item-4">
@@ -42,7 +42,7 @@ export default function FaqPage() {
                      <AccordionItem value="item-5">
                         <AccordionTrigger>What happens if I clear my browser cache?</AccordionTrigger>
                         <AccordionContent>
-                        Warning: Clearing your browser's local storage for this site will permanently delete all your data. Since StudyMate Lite stores everything on your computer, there is no cloud backup. Please be sure to back up any important information.
+                        Warning: Clearing your browser's local storage for this site will permanently delete all your data. Since StudyBrain stores everything on your computer, there is no cloud backup. Please be sure to back up any important information.
                         </AccordionContent>
                     </AccordionItem>
                 </Accordion>

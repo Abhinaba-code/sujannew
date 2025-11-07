@@ -74,7 +74,7 @@ export default function Dashboard() {
           <CardDescription>Search for any topic to get a quick summary.</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSearch} className="flex gap-2">
+          <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-2">
             <Input 
               type="search"
               value={searchQuery}
@@ -101,7 +101,7 @@ export default function Dashboard() {
         )}
       </Card>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {navCards.map((card) => (
           <Link href={card.href} key={card.title}>
             <Card className="hover:border-primary transition-colors hover:shadow-xl h-full">
@@ -118,8 +118,8 @@ export default function Dashboard() {
         ))}
       </div>
       
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="col-span-4 glassmorphism">
+      <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-7">
+        <Card className="lg:col-span-4 glassmorphism">
           <CardHeader>
             <CardTitle>Today's Tasks</CardTitle>
             <CardDescription>Tasks you should focus on today.</CardDescription>
@@ -128,7 +128,7 @@ export default function Dashboard() {
             <p className="text-muted-foreground">No tasks due today. Add some!</p>
           </CardContent>
         </Card>
-        <Card className="col-span-3 glassmorphism">
+        <Card className="lg:col-span-3 glassmorphism">
           <CardHeader>
             <CardTitle>Study Progress</CardTitle>
             <CardDescription>Your weekly study activity.</CardDescription>

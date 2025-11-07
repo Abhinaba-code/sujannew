@@ -60,14 +60,14 @@ function TimetableForm({ entry, onSave, onDelete }: { entry?: Partial<TimetableE
                 <Label htmlFor="end-time">End Time</Label>
                 <Input id="end-time" type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} />
             </div>
-            <DialogFooter className="sm:justify-between pt-4">
+            <DialogFooter className="flex flex-col-reverse sm:flex-row sm:justify-between pt-4 gap-2">
                 {entry?.id && onDelete && (
-                    <Button variant="destructive" onClick={() => onDelete(entry.id!)}>
+                    <Button variant="destructive" onClick={() => onDelete(entry.id!)} className="w-full sm:w-auto">
                         <Trash2 className="mr-2 h-4 w-4" /> Delete
                     </Button>
                 )}
                 <DialogClose asChild>
-                    <Button onClick={handleSubmit} >Save Entry</Button>
+                    <Button onClick={handleSubmit} className="w-full sm:w-auto ml-auto">Save Entry</Button>
                 </DialogClose>
             </DialogFooter>
         </div>
@@ -132,13 +132,13 @@ export default function TimetablePage() {
         <div>
             <Dialog open={isDialogOpen} onOpenChange={(isOpen) => { setIsDialogOpen(isOpen); if (!isOpen) setSelectedEntry(null); }}>
                 <Card>
-                    <CardHeader className="flex flex-row items-center justify-between">
+                    <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                         <div>
                             <CardTitle>Study Timetable</CardTitle>
                             <CardDescription>Your weekly study schedule. Click any slot to add or edit.</CardDescription>
                         </div>
                          <DialogTrigger asChild>
-                            <Button onClick={() => setSelectedEntry(null)}>
+                            <Button onClick={() => setSelectedEntry(null)} className="w-full sm:w-auto">
                                 <PlusCircle className="mr-2 h-4 w-4" />
                                 New Entry
                             </Button>
@@ -146,7 +146,7 @@ export default function TimetablePage() {
                     </CardHeader>
                     <CardContent>
                         <div className="overflow-x-auto">
-                            <Table className="border">
+                            <Table className="border min-w-[800px] md:min-w-full">
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead className="w-24">Time</TableHead>

@@ -345,10 +345,10 @@ export default function QuizzesPage() {
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
             <div>
                 <CardTitle>Personalized Quiz</CardTitle>
-                <CardDescription>Category: {decodeHtml(currentQuestion.category)} | Difficulty: {currentQuestion.difficulty}</CardDescription>
+                <CardDescription className="text-xs sm:text-sm">Category: {decodeHtml(currentQuestion.category)} | Difficulty: {currentQuestion.difficulty}</CardDescription>
             </div>
             {timeLeft !== null && (
                 <div className="flex items-center gap-2 text-lg font-mono p-2 rounded-md bg-muted">

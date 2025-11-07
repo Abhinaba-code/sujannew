@@ -103,7 +103,7 @@ export default function ProfilePage() {
                         </div>
                     )}
                     <CardTitle className="text-xl">Personal Information</CardTitle>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                        <ProfileDetail icon={User} label="Full Name" value={data.name} />
                        <ProfileDetail icon={Hash} label="Age" value={data.age} />
                        <ProfileDetail icon={Mail} label="Email" value={email} />
@@ -131,7 +131,7 @@ export default function ProfilePage() {
                         This action is permanent and cannot be undone. This will permanently delete your account and remove all your data.
                     </CardDescription>
                 </CardHeader>
-                <CardFooter className="bg-destructive/10">
+                <CardFooter className="bg-destructive/10 p-4">
                      <AlertDialog onOpenChange={(open) => !open && resetDeleteFlow()}>
                         <AlertDialogTrigger asChild>
                             <Button variant="destructive" className="w-full">

@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { PlusCircle, Trash2, Edit } from 'lucide-react';
+import { Trash2, Edit } from 'lucide-react';
 
 export default function NotesPage() {
   const { user, updateUserData } = useAuth();
@@ -53,8 +53,8 @@ export default function NotesPage() {
   }
 
   return (
-    <div className="grid md:grid-cols-3 gap-8">
-      <div className="md:col-span-1">
+    <div className="grid lg:grid-cols-3 gap-8">
+      <div className="lg:col-span-1">
         <Card>
           <CardHeader>
             <CardTitle>{isEditing ? 'Edit Note' : 'Create Note'}</CardTitle>
@@ -79,7 +79,7 @@ export default function NotesPage() {
         </Card>
       </div>
 
-      <div className="md:col-span-2">
+      <div className="lg:col-span-2">
          <Card>
             <CardHeader>
                 <CardTitle>Your Notes</CardTitle>
@@ -92,7 +92,7 @@ export default function NotesPage() {
                             <Card key={note.id}>
                                 <CardHeader>
                                     <CardTitle className="text-lg flex justify-between items-center">
-                                        {note.title}
+                                        <span className="break-all">{note.title}</span>
                                         <div className="flex gap-2">
                                             <Button variant="ghost" size="icon" onClick={() => handleEdit(note)}><Edit className="h-4 w-4" /></Button>
                                             <Button variant="ghost" size="icon" onClick={() => handleDelete(note.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
@@ -101,7 +101,7 @@ export default function NotesPage() {
                                     <CardDescription>{new Date(note.createdAt).toLocaleDateString()}</CardDescription>
                                 </CardHeader>
                                 <CardContent>
-                                    <p className="whitespace-pre-wrap">{note.content}</p>
+                                    <p className="whitespace-pre-wrap break-words">{note.content}</p>
                                 </CardContent>
                             </Card>
                         ))}

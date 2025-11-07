@@ -4,8 +4,7 @@ import { FlashcardGenerator } from '@/components/flashcards/flashcard-generator'
 import { useAuth } from '@/hooks/use-auth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
-import { BookOpen, PlusCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { BookOpen } from 'lucide-react';
 
 export default function FlashcardsPage() {
     const { user } = useAuth();
@@ -22,7 +21,7 @@ export default function FlashcardsPage() {
             </CardHeader>
             <CardContent>
                 {decks.length > 0 ? (
-                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         {decks.map(deck => (
                             <Link href={`/flashcards/${deck.id}`} key={deck.id}>
                                 <Card className="hover:border-primary transition-colors hover:shadow-lg h-full">
