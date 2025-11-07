@@ -40,6 +40,15 @@ type QuizSettings = {
     timeLimit: number; // in seconds, 0 for no limit
 }
 
+const trollMessages = [
+  "You can't survive here, go back to your study table! 💀",
+  "Are you consulting a textbook for this? 🤨",
+  "I could have solved this and written a novel by now. 📖",
+  "Still thinking? My grandma answered this faster from her nap. 😴",
+  "Did you forget how to click? The answer isn't going to select itself. 🖱️",
+  "This isn't rocket science... or is it? 🤔 Either way, time's up!"
+];
+
 // Function to decode HTML entities
 function decodeHtml(html: string) {
     if (typeof window === 'undefined') {
@@ -80,6 +89,7 @@ export default function QuizzesPage() {
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [questionTimeLeft, setQuestionTimeLeft] = useState(10);
   const [showSurvivalMessage, setShowSurvivalMessage] = useState(false);
+  const [trollMessage, setTrollMessage] = useState('');
 
   useEffect(() => {
     async function fetchCategories() {
@@ -117,10 +127,14 @@ export default function QuizzesPage() {
         }, 1000);
         return () => clearInterval(timer);
       } else {
-        setShowSurvivalMessage(true);
+        if (!showSurvivalMessage) {
+            const randomMessage = trollMessages[Math.floor(Math.random() * trollMessages.length)];
+            setTrollMessage(randomMessage);
+            setShowSurvivalMessage(true);
+        }
       }
     }
-  }, [quizState, settings.difficulty, isAnswered, questionTimeLeft]);
+  }, [quizState, settings.difficulty, isAnswered, questionTimeLeft, showSurvivalMessage]);
 
 
   const fetchQuestions = useCallback(async () => {
@@ -189,6 +203,7 @@ export default function QuizzesPage() {
         setCurrentQuestionIndex(prev => prev + 1);
         setQuestionTimeLeft(10);
         setShowSurvivalMessage(false);
+        setTrollMessage('');
     } else {
         setQuizState('finished');
     }
@@ -337,7 +352,7 @@ export default function QuizzesPage() {
 
         {showSurvivalMessage && (
             <p className="text-center text-destructive font-semibold text-sm">
-                You can't survive here, go back to your study table! 💀
+                {trollMessage}
             </p>
         )}
 
@@ -377,5 +392,3 @@ export default function QuizzesPage() {
     </Card>
   );
 }
-
-    
