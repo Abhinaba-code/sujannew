@@ -3,12 +3,13 @@
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search as SearchIcon, Book, ClipboardCheck, BookOpen, FileText } from "lucide-react";
-import { useState, useMemo } from "react";
+import { Search as SearchIcon, Book, ClipboardCheck, BookOpen } from "lucide-react";
+import { useState, useMemo, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import type { Note, Task, FlashcardDeck } from '@/lib/types';
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import { useSearchParams } from "next/navigation";
 
 type WikiArticle = {
   title: string;
@@ -25,11 +26,21 @@ type WikiArticle = {
 
 export default function SearchPage() {
   const { user } = useAuth();
+  const searchParams = useSearchParams();
+  
   const [searchedArticle, setSearchedArticle] = useState<WikiArticle | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
   const [isLoadingSearch, setIsLoadingSearch] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
+
+  useEffect(() => {
+    const q = searchParams.get('q');
+    if (q) {
+      setSearchQuery(q);
+      handleSearch(q);
+    }
+  }, [searchParams]);
 
   const localResults = useMemo(() => {
     if (!searchQuery.trim() || !user) {
@@ -63,10 +74,9 @@ export default function SearchPage() {
 
   }, [searchQuery, user]);
 
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSearch = async (query: string) => {
     setHasSearched(true);
-    if (!searchQuery.trim()) {
+    if (!query.trim()) {
         setSearchedArticle(null);
         setSearchError(null);
         return;
@@ -77,15 +87,18 @@ export default function SearchPage() {
     setSearchedArticle(null);
 
     try {
-      const response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(searchQuery)}`);
+      const response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`);
       if (!response.ok) {
         if (response.status === 404) {
-          throw new Error(`No Wikipedia article found for "${searchQuery}".`);
+          // It's not really an error if no article is found, so we just won't show the card.
+          setSearchedArticle(null);
+        } else {
+          throw new Error('Failed to fetch article from Wikipedia.');
         }
-        throw new Error('Failed to fetch article from Wikipedia.');
+      } else {
+        const data: WikiArticle = await response.json();
+        setSearchedArticle(data);
       }
-      const data: WikiArticle = await response.json();
-      setSearchedArticle(data);
     } catch (error: any) {
       setSearchError(error.message);
     } finally {
@@ -93,11 +106,16 @@ export default function SearchPage() {
     }
   };
 
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleSearch(searchQuery);
+  }
+
   const totalLocalResults = localResults.notes.length + localResults.tasks.length + localResults.decks.length;
 
   return (
     <div className="space-y-8">
-      <form onSubmit={handleSearch} className="relative">
+      <form onSubmit={handleFormSubmit} className="relative">
         <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
         <Input
           type="search"
@@ -111,13 +129,13 @@ export default function SearchPage() {
         </Button>
       </form>
 
-    {hasSearched && (
+    {(hasSearched || searchQuery) && (
         <div className="space-y-6">
         {/* Local Search Results */}
         <Card>
             <CardHeader>
                 <CardTitle>Local Results</CardTitle>
-                <CardDescription>Found {totalLocalResults} results in your personal data.</CardDescription>
+                <CardDescription>Found {totalLocalResults} results for "{searchQuery}" in your personal data.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
                 {totalLocalResults === 0 && !isLoadingSearch && <p>No local results found.</p>}
@@ -125,7 +143,7 @@ export default function SearchPage() {
                 {localResults.notes.length > 0 && (
                     <div className="space-y-2">
                         <h3 className="font-semibold flex items-center gap-2"><Book className="h-5 w-5" /> Notes ({localResults.notes.length})</h3>
-                        <div className="border rounded-md p-2 space-y-2">
+                        <div className="border rounded-md p-2 space-y-2 max-h-60 overflow-y-auto">
                         {localResults.notes.map(note => (
                             <Link key={note.id} href="/notes">
                                 <div className="p-2 hover:bg-muted rounded-md">
@@ -141,7 +159,7 @@ export default function SearchPage() {
                 {localResults.tasks.length > 0 && (
                      <div className="space-y-2">
                         <h3 className="font-semibold flex items-center gap-2"><ClipboardCheck className="h-5 w-5" /> Tasks ({localResults.tasks.length})</h3>
-                        <div className="border rounded-md p-2 space-y-2">
+                        <div className="border rounded-md p-2 space-y-2 max-h-60 overflow-y-auto">
                         {localResults.tasks.map(task => (
                             <Link key={task.id} href="/tasks">
                                 <div className="p-2 hover:bg-muted rounded-md flex items-center">
@@ -157,7 +175,7 @@ export default function SearchPage() {
                 {localResults.decks.length > 0 && (
                     <div className="space-y-2">
                         <h3 className="font-semibold flex items-center gap-2"><BookOpen className="h-5 w-5" /> Flashcards ({localResults.decks.length})</h3>
-                         <div className="border rounded-md p-2 space-y-2">
+                         <div className="border rounded-md p-2 space-y-2 max-h-60 overflow-y-auto">
                         {localResults.decks.map(deck => (
                             <Link key={deck.id} href={`/flashcards/${deck.id}`}>
                                 <div className="p-2 hover:bg-muted rounded-md">
@@ -177,7 +195,7 @@ export default function SearchPage() {
         <Card>
             <CardHeader>
             <CardTitle>Wikipedia Results</CardTitle>
-            <CardDescription>Web search results from Wikipedia.</CardDescription>
+            <CardDescription>Web search results from Wikipedia for "{searchQuery}".</CardDescription>
             </CardHeader>
             <CardContent>
             {isLoadingSearch && <p>Loading Wikipedia results...</p>}
@@ -191,20 +209,21 @@ export default function SearchPage() {
                 </a>
                 </div>
             ) : (
-                !isLoadingSearch && !searchError && <p>Wikipedia results will appear here.</p>
+                !isLoadingSearch && !searchError && <p>No Wikipedia article found for this query.</p>
             )}
             </CardContent>
         </Card>
         </div>
     )}
 
-    {!hasSearched && (
+    {!(hasSearched || searchQuery) && (
         <Card>
             <CardHeader>
                 <CardTitle>Search Everything</CardTitle>
                 <CardDescription>Enter a query above to search your local notes, tasks, flashcards, and the web.</CardDescription>
             </CardHeader>
             <CardContent className="text-center text-muted-foreground py-12">
+                <SearchIcon className="mx-auto h-12 w-12" />
                 <p>Your search results will appear here.</p>
             </CardContent>
         </Card>

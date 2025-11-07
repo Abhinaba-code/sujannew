@@ -47,9 +47,18 @@ export function AppHeader() {
     router.push('/login');
   };
 
-  const handleSearchFocus = () => {
+  const handleSearchFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+      e.target.blur();
       if (pathname !== '/search') {
           router.push('/search');
+      }
+  }
+
+  const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      const query = e.currentTarget.search.value;
+      if(query) {
+        router.push(`/search?q=${query}`);
       }
   }
 
@@ -72,17 +81,18 @@ export function AppHeader() {
       <h1 className="text-xl font-semibold md:text-2xl font-headline">{pageTitle}</h1>
 
       <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-        <div className="ml-auto flex items-center gap-4">
+        <form onSubmit={handleSearchSubmit} className="ml-auto flex items-center gap-4">
           <div className="relative flex-1 sm:flex-initial">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
+              name="search"
               placeholder="Search everything..."
               className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]"
               onFocus={handleSearchFocus}
             />
           </div>
-        </div>
+        </form>
         <ThemeToggle />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

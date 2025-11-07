@@ -12,6 +12,7 @@ import {
   LayoutGrid,
   Scroll,
   Timer,
+  FileQuestion,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -30,6 +31,7 @@ const navItems = [
   { href: '/timetable', icon: Calendar, label: 'Timetable' },
   { href: '/flashcards', icon: BookOpen, label: 'Flashcards' },
   { href: '/pomodoro', icon: Timer, label: 'Pomodoro' },
+  { href: '/quizzes', icon: FileQuestion, label: 'Quizzes' },
   { href: '/search', icon: LayoutGrid, label: 'Smart Search' },
 ];
 
