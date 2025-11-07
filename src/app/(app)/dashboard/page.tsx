@@ -4,7 +4,9 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/use-auth';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
-import { BookOpen, Calendar, ClipboardList, Timer } from 'lucide-react';
+import { BookOpen, Calendar, ClipboardList, Timer, Search as SearchIcon } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 const navCards = [
     { title: "Notes", icon: BookOpen, href: "/notes", description: "Create & manage notes" },
@@ -28,7 +30,11 @@ type WikiArticle = {
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const [article, setArticle] = useState<WikiArticle | null>(null);
+  const [featuredArticle, setFeaturedArticle] = useState<WikiArticle | null>(null);
+  const [searchedArticle, setSearchedArticle] = useState<WikiArticle | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isLoadingSearch, setIsLoadingSearch] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchFeaturedArticle() {
@@ -42,9 +48,8 @@ export default function Dashboard() {
           throw new Error('Failed to fetch article');
         }
         const data = await response.json();
-        // tfa is "Today's Featured Article"
         if (data.tfa) {
-            setArticle(data.tfa);
+            setFeaturedArticle(data.tfa);
         }
       } catch (error) {
         console.error("Error fetching Wikipedia article:", error);
@@ -54,21 +59,80 @@ export default function Dashboard() {
     fetchFeaturedArticle();
   }, []);
 
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+
+    setIsLoadingSearch(true);
+    setSearchError(null);
+    setSearchedArticle(null);
+
+    try {
+      const response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(searchQuery)}`);
+      if (!response.ok) {
+        if(response.status === 404) {
+            throw new Error(`No Wikipedia article found for "${searchQuery}".`);
+        }
+        throw new Error('Failed to fetch article from Wikipedia.');
+      }
+      const data: WikiArticle = await response.json();
+      setSearchedArticle(data);
+    } catch (error: any) {
+      setSearchError(error.message);
+    } finally {
+      setIsLoadingSearch(false);
+    }
+  };
+
+
   return (
     <div className="flex flex-col gap-8">
       <div>
         <h1 className="text-3xl font-bold font-headline">Welcome back, {user?.data.name || user?.username}!</h1>
         <p className="text-muted-foreground">Ready to be productive today?</p>
       </div>
+      
+      <Card>
+        <CardHeader>
+          <CardTitle>Wikipedia Search</CardTitle>
+          <CardDescription>Search for any topic to get a quick summary.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSearch} className="flex gap-2">
+            <Input 
+              type="search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="e.g., Photosynthesis, Roman Empire..."
+              className="flex-grow"
+            />
+            <Button type="submit" disabled={isLoadingSearch}>
+              <SearchIcon className="mr-2 h-4 w-4" /> 
+              {isLoadingSearch ? 'Searching...' : 'Search'}
+            </Button>
+          </form>
+        </CardContent>
+        {isLoadingSearch && <CardContent><p>Loading search results...</p></CardContent>}
+        {searchError && <CardContent><p className="text-destructive">{searchError}</p></CardContent>}
+        {searchedArticle && (
+          <CardContent className="border-t pt-6">
+            <h3 className="text-xl font-semibold mb-2">{searchedArticle.title}</h3>
+            <p className="text-muted-foreground line-clamp-4">{searchedArticle.extract}</p>
+            <a href={searchedArticle.content_urls.desktop.page} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline mt-2 inline-block">
+              Read more on Wikipedia
+            </a>
+          </CardContent>
+        )}
+      </Card>
 
-      {article && (
+      {featuredArticle && (
           <Card className="glassmorphism">
             <CardHeader>
-                <CardTitle>Today's Featured Article: {article.title}</CardTitle>
+                <CardTitle>Today's Featured Article: {featuredArticle.title}</CardTitle>
             </CardHeader>
               <CardContent className="p-6">
-                  <p className="text-muted-foreground line-clamp-3">{article.extract}</p>
-                  <a href={article.content_urls.desktop.page} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline mt-2 inline-block">
+                  <p className="text-muted-foreground line-clamp-3">{featuredArticle.extract}</p>
+                  <a href={featuredArticle.content_urls.desktop.page} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline mt-2 inline-block">
                     Read more on Wikipedia
                   </a>
               </CardContent>
