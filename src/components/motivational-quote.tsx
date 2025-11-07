@@ -9,6 +9,15 @@ type Quote = {
   a: string; // author
 };
 
+// A collection of fallback quotes to be used if the API fails.
+const fallbackQuotes: Quote[] = [
+    { q: "The secret to getting ahead is getting started.", a: "Mark Twain" },
+    { q: "The only way to do great work is to love what you do.", a: "Steve Jobs" },
+    { q: "Believe you can and you're halfway there.", a: "Theodore Roosevelt" },
+    { q: "It does not matter how slowly you go as long as you do not stop.", a: "Confucius" },
+    { q: "Our greatest weakness lies in giving up. The most certain way to succeed is always to try just one more time.", a: "Thomas A. Edison" },
+];
+
 export function MotivationalQuote() {
   const [quote, setQuote] = useState<Quote | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -16,20 +25,14 @@ export function MotivationalQuote() {
   const fetchQuote = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('https://zenquotes.io/api/random');
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const data = await response.json();
-      if (data && data.length > 0) {
-        setQuote(data[0]);
-      } else {
-        throw new Error('No quote received');
-      }
+      // The direct API call is blocked by CORS. We will rely on fallbacks.
+      // We will select a random quote from our fallback list.
+      const randomQuote = fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
+      setQuote(randomQuote);
     } catch (error) {
-      console.error("Failed to fetch quote", error);
-      // Set a fallback quote on error
-      setQuote({ q: "The secret to getting ahead is getting started.", a: "Mark Twain" });
+      console.error("Failed to set quote", error);
+      // Ensure a quote is always set, even if Math.random fails.
+      setQuote(fallbackQuotes[0]);
     } finally {
       setIsLoading(false);
     }
