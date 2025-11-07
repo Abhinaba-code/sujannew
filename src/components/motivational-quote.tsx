@@ -18,7 +18,7 @@ export function MotivationalQuote() {
     try {
       const response = await fetch('https://cors-anywhere.herokuapp.com/https://zenquotes.io/api/random');
       if (!response.ok) {
-        throw new Error('Failed to fetch quote');
+        throw new Error('Network response was not ok');
       }
       const data = await response.json();
       if (data && data.length > 0) {
