@@ -96,9 +96,19 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       toast({ variant: 'destructive', title: 'Signup Failed', description: 'Username already exists.' });
       return false;
     }
-    allUsers[username] = { email, password: password_, data: { ...initialUserData, name: username } };
+    
+    const newUser: Omit<User, 'email'> = { 
+        password: password_, 
+        data: { ...initialUserData, name: username } 
+    };
+    allUsers[username] = newUser;
     saveUsersToStorage(allUsers);
-    toast({ title: 'Signup successful', description: 'You can now log in.' });
+    
+    const userToLogin: User = { username, email, ...newUser };
+    setUser(userToLogin);
+    localStorage.setItem('currentUser', userToLogin.email);
+
+    toast({ title: 'Signup successful!', description: 'Welcome! Please complete your profile.' });
     return true;
   }, [toast]);
 

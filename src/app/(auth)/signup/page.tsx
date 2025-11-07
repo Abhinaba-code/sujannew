@@ -50,7 +50,7 @@ export default function SignupPage() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const success = await signup(values.username, values.email, values.password);
     if (success) {
-      router.push('/login');
+      router.push('/profile/edit');
     }
   }
 
