@@ -3,8 +3,12 @@
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search as SearchIcon } from "lucide-react";
-import { useState } from "react";
+import { Search as SearchIcon, Book, ClipboardCheck, BookOpen, FileText } from "lucide-react";
+import { useState, useMemo } from "react";
+import { useAuth } from "@/hooks/use-auth";
+import type { Note, Task, FlashcardDeck } from '@/lib/types';
+import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
 
 type WikiArticle = {
   title: string;
@@ -20,14 +24,53 @@ type WikiArticle = {
 };
 
 export default function SearchPage() {
+  const { user } = useAuth();
   const [searchedArticle, setSearchedArticle] = useState<WikiArticle | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoadingSearch, setIsLoadingSearch] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
+  const [hasSearched, setHasSearched] = useState(false);
+
+  const localResults = useMemo(() => {
+    if (!searchQuery.trim() || !user) {
+      return { notes: [], tasks: [], decks: [] };
+    }
+    const lowercasedQuery = searchQuery.toLowerCase();
+    
+    const notes = user.data.notes.filter(note => 
+        note.title.toLowerCase().includes(lowercasedQuery) || 
+        note.content.toLowerCase().includes(lowercasedQuery)
+    );
+
+    const tasks = user.data.tasks.filter(task => 
+        task.title.toLowerCase().includes(lowercasedQuery)
+    );
+
+    const decks = user.data.flashcardDecks.map(deck => {
+        const matchingCards = deck.cards.filter(card => 
+            card.front.toLowerCase().includes(lowercasedQuery) ||
+            card.back.toLowerCase().includes(lowercasedQuery)
+        );
+        const deckNameMatches = deck.name.toLowerCase().includes(lowercasedQuery);
+
+        if (deckNameMatches || matchingCards.length > 0) {
+            return { ...deck, cards: deckNameMatches ? deck.cards : matchingCards };
+        }
+        return null;
+    }).filter((d): d is FlashcardDeck => d !== null);
+
+    return { notes, tasks, decks };
+
+  }, [searchQuery, user]);
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!searchQuery.trim()) return;
+    setHasSearched(true);
+    if (!searchQuery.trim()) {
+        setSearchedArticle(null);
+        setSearchError(null);
+        return;
+    };
 
     setIsLoadingSearch(true);
     setSearchError(null);
@@ -50,6 +93,8 @@ export default function SearchPage() {
     }
   };
 
+  const totalLocalResults = localResults.notes.length + localResults.tasks.length + localResults.decks.length;
+
   return (
     <div className="space-y-8">
       <form onSubmit={handleSearch} className="relative">
@@ -66,27 +111,105 @@ export default function SearchPage() {
         </Button>
       </form>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Search Results</CardTitle>
-          <CardDescription>Currently searching Wikipedia. Local search coming soon.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {isLoadingSearch && <p>Loading search results...</p>}
-          {searchError && <p className="text-destructive">{searchError}</p>}
-          {searchedArticle ? (
-            <div className="border-t pt-6">
-              <h3 className="text-xl font-semibold mb-2">{searchedArticle.title}</h3>
-              <p className="text-muted-foreground line-clamp-4">{searchedArticle.extract}</p>
-              <a href={searchedArticle.content_urls.desktop.page} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline mt-2 inline-block">
-                Read more on Wikipedia
-              </a>
-            </div>
-          ) : (
-            !isLoadingSearch && !searchError && <p>Search results will appear here.</p>
-          )}
-        </CardContent>
-      </Card>
+    {hasSearched && (
+        <div className="space-y-6">
+        {/* Local Search Results */}
+        <Card>
+            <CardHeader>
+                <CardTitle>Local Results</CardTitle>
+                <CardDescription>Found {totalLocalResults} results in your personal data.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                {totalLocalResults === 0 && !isLoadingSearch && <p>No local results found.</p>}
+
+                {localResults.notes.length > 0 && (
+                    <div className="space-y-2">
+                        <h3 className="font-semibold flex items-center gap-2"><Book className="h-5 w-5" /> Notes ({localResults.notes.length})</h3>
+                        <div className="border rounded-md p-2 space-y-2">
+                        {localResults.notes.map(note => (
+                            <Link key={note.id} href="/notes">
+                                <div className="p-2 hover:bg-muted rounded-md">
+                                    <p className="font-bold">{note.title}</p>
+                                    <p className="text-sm text-muted-foreground line-clamp-2">{note.content}</p>
+                                </div>
+                            </Link>
+                        ))}
+                        </div>
+                    </div>
+                )}
+
+                {localResults.tasks.length > 0 && (
+                     <div className="space-y-2">
+                        <h3 className="font-semibold flex items-center gap-2"><ClipboardCheck className="h-5 w-5" /> Tasks ({localResults.tasks.length})</h3>
+                        <div className="border rounded-md p-2 space-y-2">
+                        {localResults.tasks.map(task => (
+                            <Link key={task.id} href="/tasks">
+                                <div className="p-2 hover:bg-muted rounded-md flex items-center">
+                                    <p className="font-bold">{task.title}</p>
+                                    {task.completed && <Badge variant="secondary" className="ml-auto">Completed</Badge>}
+                                </div>
+                            </Link>
+                        ))}
+                        </div>
+                    </div>
+                )}
+                
+                {localResults.decks.length > 0 && (
+                    <div className="space-y-2">
+                        <h3 className="font-semibold flex items-center gap-2"><BookOpen className="h-5 w-5" /> Flashcards ({localResults.decks.length})</h3>
+                         <div className="border rounded-md p-2 space-y-2">
+                        {localResults.decks.map(deck => (
+                            <Link key={deck.id} href={`/flashcards/${deck.id}`}>
+                                <div className="p-2 hover:bg-muted rounded-md">
+                                    <p className="font-bold">{deck.name}</p>
+                                    <p className="text-sm text-muted-foreground">{deck.cards.length} cards match</p>
+                                </div>
+                            </Link>
+                        ))}
+                        </div>
+                    </div>
+                )}
+
+            </CardContent>
+        </Card>
+
+        {/* Wikipedia Search Results */}
+        <Card>
+            <CardHeader>
+            <CardTitle>Wikipedia Results</CardTitle>
+            <CardDescription>Web search results from Wikipedia.</CardDescription>
+            </CardHeader>
+            <CardContent>
+            {isLoadingSearch && <p>Loading Wikipedia results...</p>}
+            {searchError && <p className="text-destructive">{searchError}</p>}
+            {searchedArticle ? (
+                <div className="pt-4 border-t">
+                <h3 className="text-xl font-semibold mb-2">{searchedArticle.title}</h3>
+                <p className="text-muted-foreground line-clamp-4">{searchedArticle.extract}</p>
+                <a href={searchedArticle.content_urls.desktop.page} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline mt-2 inline-block">
+                    Read more on Wikipedia
+                </a>
+                </div>
+            ) : (
+                !isLoadingSearch && !searchError && <p>Wikipedia results will appear here.</p>
+            )}
+            </CardContent>
+        </Card>
+        </div>
+    )}
+
+    {!hasSearched && (
+        <Card>
+            <CardHeader>
+                <CardTitle>Search Everything</CardTitle>
+                <CardDescription>Enter a query above to search your local notes, tasks, flashcards, and the web.</CardDescription>
+            </CardHeader>
+            <CardContent className="text-center text-muted-foreground py-12">
+                <p>Your search results will appear here.</p>
+            </CardContent>
+        </Card>
+    )}
+
     </div>
   );
 }
