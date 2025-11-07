@@ -51,6 +51,8 @@ export default function ProfilePage() {
         if (deleteStep === 'countdown' && countdown > 0) {
             const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
             return () => clearTimeout(timer);
+        } else if (deleteStep === 'countdown' && countdown === 0) {
+            // This logic is handled by the button's disabled state
         }
     }, [deleteStep, countdown]);
 
@@ -85,7 +87,7 @@ export default function ProfilePage() {
 
     return (
         <div className="max-w-3xl mx-auto space-y-6">
-            <Card>
+            <Card className="glassmorphism">
                 <CardHeader className="flex flex-col items-center text-center space-y-2 pb-4">
                     <Avatar className="h-24 w-24 mb-2">
                         <AvatarImage src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${username}`} />
@@ -124,7 +126,7 @@ export default function ProfilePage() {
                 </CardContent>
             </Card>
 
-            <Card className="border-destructive">
+            <Card className="border-destructive glassmorphism">
                 <CardHeader>
                     <CardTitle className="text-destructive">Delete Account</CardTitle>
                     <CardDescription>
