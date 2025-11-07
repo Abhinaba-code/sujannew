@@ -57,10 +57,10 @@ export default function SignupPage() {
   return (
     <Card className="glassmorphism">
       <CardHeader className="text-center">
-        <div className="flex justify-center items-center gap-2 mb-2">
-           <GraduationCap className="h-8 w-8 text-primary" />
+        <Link href="/" className="flex justify-center items-center gap-2 mb-2 text-current hover:text-primary transition-colors">
+           <GraduationCap className="h-8 w-8" />
            <CardTitle className="text-3xl font-headline">StudyMate Lite</CardTitle>
-         </div>
+         </Link>
         <CardDescription>Create your local-only account</CardDescription>
       </CardHeader>
       <CardContent>

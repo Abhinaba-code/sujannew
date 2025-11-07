@@ -50,10 +50,10 @@ export default function LoginPage() {
   return (
     <Card className="glassmorphism">
       <CardHeader className="text-center">
-         <div className="flex justify-center items-center gap-2 mb-2">
-           <GraduationCap className="h-8 w-8 text-primary" />
+         <Link href="/" className="flex justify-center items-center gap-2 mb-2 text-current hover:text-primary transition-colors">
+           <GraduationCap className="h-8 w-8" />
            <CardTitle className="text-3xl font-headline">StudyMate Lite</CardTitle>
-         </div>
+         </Link>
         <CardDescription>Log in to your local study hub</CardDescription>
       </CardHeader>
       <CardContent>
