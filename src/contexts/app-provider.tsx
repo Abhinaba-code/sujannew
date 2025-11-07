@@ -12,6 +12,7 @@ type AppContextType = {
   logout: () => void;
   signup: (username: string, email: string, password_?: string) => Promise<boolean>;
   updateUserData: (data: Partial<UserData>) => void;
+  deleteUser: () => void;
 };
 
 export const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -147,8 +148,20 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
   }, [user]);
 
+  const deleteUser = useCallback(() => {
+    if(!user) return;
+
+    const allUsers = getUsersFromStorage();
+    delete allUsers[user.username];
+    saveUsersToStorage(allUsers);
+
+    setUser(null);
+    localStorage.removeItem('currentUser');
+    toast({ variant: 'destructive', title: 'Account Deleted', description: 'Your account has been permanently removed.' });
+  }, [user, toast]);
+
   return (
-    <AppContext.Provider value={{ user, isLoading, login, logout, signup, updateUserData }}>
+    <AppContext.Provider value={{ user, isLoading, login, logout, signup, updateUserData, deleteUser }}>
       {children}
     </AppContext.Provider>
   );

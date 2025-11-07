@@ -2,12 +2,25 @@
 'use client';
 
 import { useAuth } from '@/hooks/use-auth';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { Pencil, User, Mail, Phone, MapPin, Hash, Book, Heart, Gamepad2, Rocket, FileText } from 'lucide-react';
+import { Pencil, User, Mail, Phone, MapPin, Hash, Book, Heart, Gamepad2, Rocket, FileText, Trash2 } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useRouter } from 'next/navigation';
+
 
 function ProfileDetail({ icon: Icon, label, value }: { icon: React.ElementType, label: string, value?: string }) {
     if (!value) return null;
@@ -23,7 +36,8 @@ function ProfileDetail({ icon: Icon, label, value }: { icon: React.ElementType, 
 }
 
 export default function ProfilePage() {
-    const { user } = useAuth();
+    const { user, deleteUser } = useAuth();
+    const router = useRouter();
 
     if (!user) {
         return <div>Loading...</div>;
@@ -31,9 +45,14 @@ export default function ProfilePage() {
 
     const { username, email, data } = user;
     const location = [data.city, data.state, data.country].filter(Boolean).join(', ');
+    
+    const handleDeleteAccount = () => {
+        deleteUser();
+        router.push('/signup');
+    };
 
     return (
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-3xl mx-auto space-y-6">
             <Card>
                 <CardHeader className="flex flex-col items-center text-center space-y-2 pb-4">
                     <Avatar className="h-24 w-24 mb-2">
@@ -71,6 +90,39 @@ export default function ProfilePage() {
                         </Link>
                     </Button>
                 </CardContent>
+            </Card>
+
+            <Card className="border-destructive">
+                <CardHeader>
+                    <CardTitle className="text-destructive">Delete Account</CardTitle>
+                    <CardDescription>
+                        This action is permanent and cannot be undone. This will permanently delete your account and remove all your data.
+                    </CardDescription>
+                </CardHeader>
+                <CardFooter className="bg-destructive/10">
+                     <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button variant="destructive" className="w-full">
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                I want to delete my account
+                            </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                This action cannot be undone. This will permanently delete your account and remove your data from our servers.
+                            </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction onClick={handleDeleteAccount} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                                Delete
+                            </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                </CardFooter>
             </Card>
         </div>
     );
