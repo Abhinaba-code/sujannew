@@ -16,16 +16,25 @@ import { useToast } from '@/hooks/use-toast';
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 const timeSlots = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, '0')}:00`); // 00:00 to 23:00
 
-function TimetableForm({ entry, onSave, onDelete }: { entry?: Partial<TimetableEntry> | null, onSave: (entry: Omit<TimetableEntry, 'id'>) => void, onDelete?: (id: string) => void }) {
+function TimetableForm({ entry, onSave, onDelete }: { entry?: Partial<TimetableEntry> | null, onSave: (entry: Partial<TimetableEntry>) => void, onDelete?: (id: string) => void }) {
     const [subject, setSubject] = useState(entry?.subject || '');
     const [day, setDay] = useState(entry?.day || '');
     const [startTime, setStartTime] = useState(entry?.startTime || '');
     const [endTime, setEndTime] = useState(entry?.endTime || '');
+    const { toast } = useToast();
 
     const handleSubmit = () => {
-        if (subject && day && startTime && endTime) {
-            onSave({ subject, day, startTime, endTime } as Omit<TimetableEntry, 'id'>);
+        if (!subject || !day || !startTime || !endTime) {
+            toast({ variant: 'destructive', title: 'Error', description: 'Please fill out all fields.' });
+            return;
         }
+
+        if (new Date(`1970-01-01T${endTime}`) <= new Date(`1970-01-01T${startTime}`)) {
+            toast({ variant: 'destructive', title: 'Invalid Time', description: 'End time must be after start time.' });
+            return;
+        }
+
+        onSave({ ...entry, subject, day, startTime, endTime });
     };
 
     return (
@@ -58,7 +67,7 @@ function TimetableForm({ entry, onSave, onDelete }: { entry?: Partial<TimetableE
                     </Button>
                 )}
                 <DialogClose asChild>
-                    <Button onClick={handleSubmit} disabled={!subject || !day || !startTime || !endTime}>Save Entry</Button>
+                    <Button onClick={handleSubmit} >Save Entry</Button>
                 </DialogClose>
             </DialogFooter>
         </div>
@@ -69,17 +78,21 @@ export default function TimetablePage() {
     const { user, updateUserData } = useAuth();
     const { toast } = useToast();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [selectedEntry, setSelectedEntry] = useState<TimetableEntry | null | { day: string, startTime: string }>(null);
+    const [selectedEntry, setSelectedEntry] = useState<Partial<TimetableEntry> | null>(null);
 
     const entries = user?.data.timetable || [];
 
-    const handleSave = (entryData: Omit<TimetableEntry, 'id'> & { id?: string }) => {
+    const handleSave = (entryData: Partial<TimetableEntry>) => {
         let updatedEntries;
+        
         if (entryData.id) { // Editing existing entry
-            updatedEntries = entries.map(e => e.id === entryData.id ? { ...e, ...entryData } : e);
+            updatedEntries = entries.map(e => e.id === entryData.id ? { ...e, ...entryData } as TimetableEntry : e);
             toast({ title: "Success", description: "Timetable entry updated." });
         } else { // Creating new entry
-            const newEntry = { ...entryData, id: crypto.randomUUID() };
+            const newEntry: TimetableEntry = {
+                 ...entryData,
+                 id: crypto.randomUUID(),
+            } as TimetableEntry;
             updatedEntries = [...entries, newEntry];
             toast({ title: "Success", description: "New timetable entry added." });
         }
@@ -98,6 +111,8 @@ export default function TimetablePage() {
 
     const handleCellClick = (day: string, time: string) => {
         const entry = getEntryForSlot(day, time);
+        // If clicking an existing entry, open it for editing.
+        // If clicking an empty slot, pre-fill day and time.
         setSelectedEntry(entry || { day, startTime: time });
         setIsDialogOpen(true);
     }
@@ -114,7 +129,7 @@ export default function TimetablePage() {
 
     return (
         <div>
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <Dialog open={isDialogOpen} onOpenChange={(isOpen) => { setIsDialogOpen(isOpen); if (!isOpen) setSelectedEntry(null); }}>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between">
                         <div>
@@ -170,8 +185,8 @@ export default function TimetablePage() {
                         <DialogTitle>{selectedEntry && 'id' in selectedEntry ? 'Edit Entry' : 'Add New Entry'}</DialogTitle>
                     </DialogHeader>
                     <TimetableForm 
-                        entry={selectedEntry as TimetableEntry} 
-                        onSave={(data) => handleSave({...selectedEntry, ...data})}
+                        entry={selectedEntry} 
+                        onSave={handleSave}
                         onDelete={handleDelete}
                     />
                 </DialogContent>
