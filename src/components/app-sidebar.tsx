@@ -38,7 +38,7 @@ const navItems = [
 ];
 
 const secondaryNavItems = [
-    { href: '/settings', icon: Settings, label: 'Settings' },
+    // { href: '/settings', icon: Settings, label: 'Settings' },
 ]
 
 export function AppSidebar({ isMobile = false, closeSheet }: { isMobile?: boolean, closeSheet?: () => void }) {
@@ -111,7 +111,7 @@ export function AppSidebar({ isMobile = false, closeSheet }: { isMobile?: boolea
                     </nav>
             )}
           </div>
-          <div className="mt-auto border-t p-2">
+          {secondaryNavItems.length > 0 && <div className="mt-auto border-t p-2">
              <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
                  {secondaryNavItems.map(({ href, icon: Icon, label }) => {
                     const isActive = pathname.startsWith(href);
@@ -136,7 +136,7 @@ export function AppSidebar({ isMobile = false, closeSheet }: { isMobile?: boolea
                     );
                 })}
              </nav>
-          </div>
+          </div>}
           <div className='p-4 border-t'>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
