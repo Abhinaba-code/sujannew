@@ -25,15 +25,38 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { ArrowLeft, GraduationCap } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 const formSchema = z.object({
   email: z.string().email('Invalid email address'),
   password: z.string().min(1, 'Password is required'),
 });
 
+type Quote = {
+  q: string;
+  a: string;
+};
+
 export default function LoginPage() {
   const router = useRouter();
   const { login } = useAuth();
+  const [quote, setQuote] = useState<Quote | null>(null);
+
+  useEffect(() => {
+    async function fetchQuote() {
+      try {
+        // ZenQuotes API has CORS issues, so we use a proxy.
+        const response = await fetch('https://cors-anywhere.herokuapp.com/https://zenquotes.io/api/random');
+        const data = await response.json();
+        if (data && data.length > 0) {
+          setQuote(data[0]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch quote", error);
+      }
+    }
+    fetchQuote();
+  }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -57,6 +80,12 @@ export default function LoginPage() {
         <CardDescription>Log in to your local study hub</CardDescription>
       </CardHeader>
       <CardContent>
+        {quote && (
+          <div className="mb-4 p-4 border-l-4 border-primary bg-muted/50 text-sm italic">
+            <p>"{quote.q}"</p>
+            <p className="text-right font-medium not-italic">- {quote.a}</p>
+          </div>
+        )}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
