@@ -17,6 +17,7 @@ import { LogOut, Menu, Search, Settings, User as UserIcon } from 'lucide-react';
 import { ThemeToggle } from './theme-toggle';
 import { AppSidebar } from './app-sidebar';
 import { usePathname, useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 const getTitleFromPath = (path: string) => {
   const segments = path.split('/').filter(Boolean);
@@ -41,6 +42,7 @@ export function AppHeader() {
   const pathname = usePathname();
   const router = useRouter();
   const pageTitle = getTitleFromPath(pathname);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -61,11 +63,13 @@ export function AppHeader() {
         router.push(`/search?q=${query}`);
       }
   }
+  
+  const closeSheet = () => setIsSheetOpen(false);
 
   return (
     <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background/80 backdrop-blur-lg px-4 md:px-6">
       <div className="md:hidden">
-        <Sheet>
+        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
           <SheetTrigger asChild>
             <Button variant="outline" size="icon">
               <Menu className="h-5 w-5" />
@@ -73,7 +77,7 @@ export function AppHeader() {
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="p-0 w-64">
-            <AppSidebar isMobile={true} />
+            <AppSidebar isMobile={true} closeSheet={closeSheet}/>
           </SheetContent>
         </Sheet>
       </div>

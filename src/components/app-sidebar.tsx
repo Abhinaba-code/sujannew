@@ -13,6 +13,7 @@ import {
   Scroll,
   Timer,
   FileQuestion,
+  BrainCircuit,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -35,7 +36,7 @@ const navItems = [
   { href: '/search', icon: LayoutGrid, label: 'Smart Search' },
 ];
 
-export function AppSidebar({ isMobile = false }) {
+export function AppSidebar({ isMobile = false, closeSheet }: { isMobile?: boolean, closeSheet?: () => void }) {
   const pathname = usePathname();
 
   const navContent = (
@@ -74,8 +75,8 @@ export function AppSidebar({ isMobile = false }) {
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-16 items-center border-b px-4 lg:px-6">
             <Link href="/" className="flex items-center gap-2 font-semibold">
-              <GraduationCap className="h-6 w-6 text-primary" />
-              <span className="">StudyMate Lite</span>
+              <BrainCircuit className="h-6 w-6 text-primary" />
+              <span className="">StudyBrain</span>
             </Link>
             <Button variant="outline" size="icon" className="ml-auto h-8 w-8">
               <Bell className="h-4 w-4" />
@@ -91,6 +92,7 @@ export function AppSidebar({ isMobile = false }) {
                     <Link
                       key={href}
                       href={href}
+                      onClick={closeSheet}
                       className={cn(
                         'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
                         { 'bg-muted text-primary': isActive }
