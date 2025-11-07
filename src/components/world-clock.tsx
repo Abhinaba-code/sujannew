@@ -22,15 +22,15 @@ export function WorldClock() {
   
   if (!time) {
     return (
-        <div className="text-sm flex items-center gap-2 animate-pulse">
-            <Clock className="h-4 w-4" /> Loading time...
+        <div className="text-lg flex items-center gap-2 animate-pulse">
+            <Clock className="h-5 w-5" /> Loading time...
         </div>
     );
   }
 
   return (
-    <div className="flex items-center gap-2 text-base font-mono p-2 rounded-md bg-muted/70">
-      <Clock className="h-5 w-5"/>
+    <div className="flex items-center gap-2 text-lg font-mono p-2 rounded-md bg-muted/70">
+      <Clock className="h-6 w-6"/>
       <span>{format(time, 'hh:mm:ss a')}</span>
     </div>
   );
