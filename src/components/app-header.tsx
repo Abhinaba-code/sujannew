@@ -13,7 +13,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { LogOut, Menu, Search, Settings, User as UserIcon } from 'lucide-react';
+import { LogOut, Menu, Search, Settings, User as UserIcon, Bell } from 'lucide-react';
 import { ThemeToggle } from './theme-toggle';
 import { AppSidebar } from './app-sidebar';
 import { usePathname, useRouter } from 'next/navigation';
@@ -77,7 +77,7 @@ export function AppHeader() {
               <span className="sr-only">Toggle navigation menu</span>
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="p-0 w-64">
+          <SheetContent side="left" className="p-0 w-64" showCloseButton={false}>
             <AppSidebar isMobile={true} closeSheet={closeSheet}/>
           </SheetContent>
         </Sheet>
@@ -85,20 +85,24 @@ export function AppHeader() {
 
       <h1 className="text-xl font-semibold md:text-2xl font-headline hidden sm:block">{pageTitle}</h1>
 
-      <div className="flex w-full items-center justify-end gap-2 md:ml-auto md:gap-4">
+      <div className="flex w-full items-center justify-end gap-2 md:ml-auto md:gap-2">
         <WorldClock />
-        <form onSubmit={handleSearchSubmit} className="flex-1 md:flex-initial">
+        <form onSubmit={handleSearchSubmit} className="flex-1 max-w-xs md:max-w-sm ml-auto">
           <div className="relative">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
               name="search"
               placeholder="Search..."
-              className="pl-8 sm:w-[200px] md:w-[200px] lg:w-[300px]"
+              className="pl-8 sm:w-full"
               onFocus={handleSearchFocus}
             />
           </div>
         </form>
+         <Button variant="outline" size="icon" className="h-10 w-10 md:hidden">
+            <Bell className="h-5 w-5" />
+            <span className="sr-only">Toggle notifications</span>
+        </Button>
         <ThemeToggle />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
