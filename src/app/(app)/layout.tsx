@@ -18,8 +18,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (isClient && !isLoading && !user && pathname !== '/login' && pathname !== '/signup' && pathname !== '/') {
-      router.push('/login');
+    // If not loading and no user, redirect to landing page if they are not already on a public page.
+    if (isClient && !isLoading && !user && !['/login', '/signup', '/'].includes(pathname)) {
+      router.push('/');
     }
   }, [user, isLoading, router, isClient, pathname]);
 
@@ -31,23 +32,19 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     );
   }
   
-  if (!user) {
-    // For login/signup pages, or the main landing page, we don't want the app layout
-     if (pathname === '/login' || pathname === '/signup' || pathname === '/') {
-       return <>{children}</>;
-     }
-     // Redirect to login if trying to access an app page without being logged in
-     if (isClient) {
-        // A redirect is already happening in the other effect, so we can show a loader
-         return (
-          <div className="flex h-screen w-full items-center justify-center">
-            <Loader2 className="h-12 w-12 animate-spin text-primary" />
-          </div>
-        );
-     }
-     return null;
+  // For public pages, we don't want the app layout if the user is not logged in.
+  if (!user && ['/login', '/signup', '/'].includes(pathname)) {
+      return <>{children}</>;
   }
 
+  // If we are on a client, but still no user, show a loader while redirecting.
+  if (!user) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen w-full">
