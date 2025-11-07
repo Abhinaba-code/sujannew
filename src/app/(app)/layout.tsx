@@ -6,6 +6,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { AppSidebar } from '@/components/app-sidebar';
 import { AppHeader } from '@/components/app-header';
 import { Loader2 } from 'lucide-react';
+import { MotivationalQuote } from '@/components/motivational-quote';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();
@@ -60,7 +61,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <div className="flex flex-1 flex-col">
         <AppHeader />
         <main className="flex-1 overflow-y-auto p-4 md:p-8">
-          {children}
+          <MotivationalQuote />
+          <div className="mt-6">
+            {children}
+          </div>
         </main>
       </div>
     </div>
