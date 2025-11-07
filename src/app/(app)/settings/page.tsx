@@ -33,7 +33,7 @@ export default function SettingsPage() {
             const dataStr = JSON.stringify(user.data, null, 2);
             const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
             
-            const exportFileDefaultName = `studybrain_backup_${user.username}_${new Date().toISOString().split('T')[0]}.json`;
+            const exportFileDefaultName = `studymate_backup_${user.username}_${new Date().toISOString().split('T')[0]}.json`;
             
             const linkElement = document.createElement('a');
             linkElement.setAttribute('href', dataUri);
