@@ -78,6 +78,8 @@ export default function QuizzesPage() {
       timeLimit: 0,
   });
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
+  const [questionTimeLeft, setQuestionTimeLeft] = useState(10);
+  const [showSurvivalMessage, setShowSurvivalMessage] = useState(false);
 
   useEffect(() => {
     async function fetchCategories() {
@@ -106,6 +108,19 @@ export default function QuizzesPage() {
 
     return () => clearInterval(timer);
   }, [quizState, timeLeft]);
+
+  useEffect(() => {
+    if (quizState === 'playing' && settings.difficulty === 'super-hard' && !isAnswered) {
+      if (questionTimeLeft > 0) {
+        const timer = setInterval(() => {
+          setQuestionTimeLeft(prev => prev - 1);
+        }, 1000);
+        return () => clearInterval(timer);
+      } else {
+        setShowSurvivalMessage(true);
+      }
+    }
+  }, [quizState, settings.difficulty, isAnswered, questionTimeLeft]);
 
 
   const fetchQuestions = useCallback(async () => {
@@ -138,6 +153,8 @@ export default function QuizzesPage() {
       } else {
         setTimeLeft(null);
       }
+      setQuestionTimeLeft(10);
+      setShowSurvivalMessage(false);
     } catch (err: any) {
       setError(err.message);
       setQuizState('settings');
@@ -170,6 +187,8 @@ export default function QuizzesPage() {
         setIsAnswered(false);
         setSelectedAnswer(null);
         setCurrentQuestionIndex(prev => prev + 1);
+        setQuestionTimeLeft(10);
+        setShowSurvivalMessage(false);
     } else {
         setQuizState('finished');
     }
@@ -308,6 +327,20 @@ export default function QuizzesPage() {
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="text-lg font-semibold">{currentQuestion.question}</p>
+        
+        {settings.difficulty === 'super-hard' && !isAnswered && (
+          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+            <Clock className="h-4 w-4"/>
+            <span>Time for this question: {questionTimeLeft}s</span>
+          </div>
+        )}
+
+        {showSurvivalMessage && (
+            <p className="text-center text-destructive font-semibold text-sm">
+                You can't survive here, go back to your study table! 💀
+            </p>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {answers.map((answer, index) => {
             const isCorrect = answer === decodeHtml(currentQuestion.correct_answer);
@@ -344,3 +377,5 @@ export default function QuizzesPage() {
     </Card>
   );
 }
+
+    
