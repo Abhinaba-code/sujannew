@@ -92,7 +92,7 @@ export function AppSidebar({ isMobile = false, closeSheet }: { isMobile?: boolea
                       href={href}
                       onClick={closeSheet}
                       className={cn(
-                        'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
+                        'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary hover:scale-105 hover:translate-x-1',
                         { 'bg-muted text-primary': isActive }
                       )}
                     >
@@ -103,7 +103,28 @@ export function AppSidebar({ isMobile = false, closeSheet }: { isMobile?: boolea
                 })}
               </nav>
             ) : (
-              navContent
+                 <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
+                    {navItems.map(({ href, icon: Icon, label }) => {
+                        const isActive = pathname.startsWith(href);
+                        return (
+                        <Tooltip key={href}>
+                            <TooltipTrigger asChild>
+                            <Link
+                                href={href}
+                                className={cn(
+                                'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary hover:scale-105 hover:translate-x-1',
+                                { 'bg-muted text-primary': isActive }
+                                )}
+                            >
+                                <Icon className="h-4 w-4" />
+                                <span>{label}</span>
+                            </Link>
+                            </TooltipTrigger>
+                            <TooltipContent side="right">{label}</TooltipContent>
+                        </Tooltip>
+                        );
+                    })}
+                    </nav>
             )}
           </div>
         </div>
