@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { Pencil, User, Mail, Phone, MapPin, Hash, Book, Heart, Gamepad2, Rocket, FileText, Trash2 } from 'lucide-react';
+import { Pencil, User, Mail, Phone, MapPin, Hash, Book, Heart, Gamepad2, Rocket, FileText, Trash2, ShieldCheck } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import {
   AlertDialog,
@@ -20,6 +20,9 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 
 function ProfileDetail({ icon: Icon, label, value }: { icon: React.ElementType, label: string, value?: string }) {
@@ -39,12 +42,40 @@ export default function ProfilePage() {
     const { user, deleteUser } = useAuth();
     const router = useRouter();
 
+    const [deleteStep, setDeleteStep] = useState<'initial' | 'confirm_password' | 'countdown'>('initial');
+    const [passwordInput, setPasswordInput] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+    const [countdown, setCountdown] = useState(3);
+
+    useEffect(() => {
+        if (deleteStep === 'countdown' && countdown > 0) {
+            const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [deleteStep, countdown]);
+
+    const resetDeleteFlow = () => {
+        setDeleteStep('initial');
+        setPasswordInput('');
+        setPasswordError('');
+        setCountdown(3);
+    };
+
     if (!user) {
         return <div>Loading...</div>;
     }
 
-    const { username, email, data } = user;
+    const { username, email, data, password } = user;
     const location = [data.city, data.state, data.country].filter(Boolean).join(', ');
+    
+    const handlePasswordConfirm = () => {
+        if (passwordInput === password) {
+            setPasswordError('');
+            setDeleteStep('countdown');
+        } else {
+            setPasswordError('Incorrect password. Please try again.');
+        }
+    };
     
     const handleDeleteAccount = () => {
         deleteUser();
@@ -100,7 +131,7 @@ export default function ProfilePage() {
                     </CardDescription>
                 </CardHeader>
                 <CardFooter className="bg-destructive/10">
-                     <AlertDialog>
+                     <AlertDialog onOpenChange={(open) => !open && resetDeleteFlow()}>
                         <AlertDialogTrigger asChild>
                             <Button variant="destructive" className="w-full">
                                 <Trash2 className="mr-2 h-4 w-4" />
@@ -109,16 +140,65 @@ export default function ProfilePage() {
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                             <AlertDialogHeader>
-                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                                This action cannot be undone. This will permanently delete your account and remove your data from our servers.
-                            </AlertDialogDescription>
+                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                {deleteStep === 'initial' && (
+                                    <AlertDialogDescription>
+                                        This action cannot be undone. To proceed, please click Continue.
+                                    </AlertDialogDescription>
+                                )}
+                                {deleteStep === 'confirm_password' && (
+                                     <AlertDialogDescription>
+                                        For your security, please enter your password to confirm account deletion.
+                                    </AlertDialogDescription>
+                                )}
+                                {deleteStep === 'countdown' && (
+                                     <AlertDialogDescription>
+                                        Your account will be deleted permanently.
+                                    </AlertDialogDescription>
+                                )}
                             </AlertDialogHeader>
+                            
+                            {deleteStep === 'confirm_password' && (
+                                <div className="space-y-2">
+                                    <Label htmlFor="password">Password</Label>
+                                    <Input
+                                        id="password"
+                                        type="password"
+                                        value={passwordInput}
+                                        onChange={(e) => setPasswordInput(e.target.value)}
+                                        placeholder="Enter your password"
+                                    />
+                                    {passwordError && <p className="text-sm text-destructive">{passwordError}</p>}
+                                </div>
+                            )}
+
+                            {deleteStep === 'countdown' && (
+                                <div className="text-center text-lg font-mono">
+                                    {countdown > 0 ? (
+                                        <p>Final deletion in: {countdown}</p>
+                                    ) : (
+                                        <p className="text-green-500">You can now delete your account.</p>
+                                    )}
+                                </div>
+                            )}
+
                             <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction onClick={handleDeleteAccount} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                                Delete
-                            </AlertDialogAction>
+                                <AlertDialogCancel onClick={resetDeleteFlow}>Cancel</AlertDialogCancel>
+                                {deleteStep === 'initial' && (
+                                    <AlertDialogAction onClick={() => setDeleteStep('confirm_password')}>
+                                        Continue
+                                    </AlertDialogAction>
+                                )}
+                                {deleteStep === 'confirm_password' && (
+                                    <AlertDialogAction onClick={handlePasswordConfirm} disabled={!passwordInput}>
+                                       <ShieldCheck className="mr-2 h-4 w-4" /> Confirm
+                                    </AlertDialogAction>
+                                )}
+                                {deleteStep === 'countdown' && (
+                                    <Button onClick={handleDeleteAccount} variant="destructive" disabled={countdown > 0}>
+                                        {countdown > 0 ? `Wait for ${countdown}s` : "Permanently Delete"}
+                                    </Button>
+                                )}
                             </AlertDialogFooter>
                         </AlertDialogContent>
                     </AlertDialog>
