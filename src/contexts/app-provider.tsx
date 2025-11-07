@@ -27,6 +27,7 @@ const initialUserData: UserData = {
   favoriteSubject: '',
   hobby: '',
   futureAmbition: '',
+  bio: '',
   notes: [],
   tasks: [],
   timetable: [],

@@ -61,6 +61,7 @@ export type UserData = {
   favoriteSubject: string;
   hobby: string;
   futureAmbition: string;
+  bio: string;
   notes: Note[];
   tasks: Task[];
   timetable: TimetableEntry[];

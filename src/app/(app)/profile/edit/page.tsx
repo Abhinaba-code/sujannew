@@ -11,18 +11,20 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
+import { Textarea } from '@/components/ui/textarea';
 
 const profileFormSchema = z.object({
   name: z.string().min(1, 'Name is required').max(50, 'Name must be 50 characters or less'),
-  phone: z.string().optional(),
-  city: z.string().optional(),
-  state: z.string().optional(),
-  country: z.string().optional(),
-  age: z.string().optional(),
-  studyClass: z.string().optional(),
-  favoriteSubject: z.string().optional(),
-  hobby: z.string().optional(),
-  futureAmbition: z.string().optional(),
+  phone: z.string().min(1, 'Phone number is required'),
+  city: z.string().min(1, 'City is required'),
+  state: z.string().min(1, 'State is required'),
+  country: z.string().min(1, 'Country is required'),
+  age: z.string().min(1, 'Age is required'),
+  studyClass: z.string().min(1, 'Class/Grade is required'),
+  favoriteSubject: z.string().min(1, 'Favorite subject is required'),
+  hobby: z.string().min(1, 'Hobby is required'),
+  futureAmbition: z.string().min(1, 'Future ambition is required'),
+  bio: z.string().min(1, 'Bio is required').min(10, 'Bio should be at least 10 characters long.'),
 });
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
@@ -32,7 +34,7 @@ export default function EditProfilePage() {
   const { toast } = useToast();
   const router = useRouter();
   
-  const isInitialSetup = !user?.data.name;
+  const isInitialSetup = !user?.data.name || user?.data.name.trim() === '' || !user?.data.phone;
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
@@ -47,6 +49,7 @@ export default function EditProfilePage() {
       favoriteSubject: user?.data.favoriteSubject || '',
       hobby: user?.data.hobby || '',
       futureAmbition: user?.data.futureAmbition || '',
+      bio: user?.data.bio || '',
     },
     mode: 'onChange',
   });
@@ -71,7 +74,7 @@ export default function EditProfilePage() {
                 <CardTitle>{isInitialSetup ? "Welcome! Complete Your Profile" : "Update Details Section"}</CardTitle>
                 <CardDescription>
                     {isInitialSetup 
-                        ? "Please fill in your name and other details to get started." 
+                        ? "Please fill in all your details to get started." 
                         : "Update your personal information below."}
                 </CardDescription>
             </CardHeader>
@@ -210,6 +213,19 @@ export default function EditProfilePage() {
                                 <FormLabel>What do you want to be in the future?</FormLabel>
                                 <FormControl>
                                     <Input placeholder="e.g. Software Engineer, Doctor" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                            />
+                        <FormField
+                            control={form.control}
+                            name="bio"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>About You (Bio)</FormLabel>
+                                <FormControl>
+                                    <Textarea placeholder="Tell us a little bit about yourself..." {...field} />
                                 </FormControl>
                                 <FormMessage />
                                 </FormItem>
