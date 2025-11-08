@@ -33,15 +33,13 @@ const prompt = ai.definePrompt({
   name: 'generateFlashcardsPrompt',
   input: {schema: GenerateFlashcardsInputSchema},
   output: {schema: GenerateFlashcardsOutputSchema},
-  prompt: `You are an expert educator who can create flashcards from text.
+  prompt: `You are an expert educator who creates flashcards from text.
 
-  Create flashcards from the following text. Each flashcard should have a front and back.
+Create flashcards from the following text. Each flashcard should have a front and a back. The flashcards should cover the key concepts in the text.
 
-  Text: {{{text}}}
+Text: {{{text}}}
 
-  The flashcards should cover the key concepts in the text.
-
-  The output should be a JSON array of flashcards, each with a front and back field.
+Your output MUST be a valid JSON array of objects, where each object has a "front" and a "back" key. Do not include any other text or explanation in your response.
   `,
 });
 
