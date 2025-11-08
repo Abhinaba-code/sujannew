@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -29,7 +30,7 @@ import { ArrowLeft, GraduationCap } from 'lucide-react';
 const formSchema = z.object({
   username: z.string()
     .min(3, 'Username must be at least 3 characters')
-    .regex(/^(?=.*[a-zA-Z])(?=.*[0-9])/, 'Username must contain both letters and numbers (e.g., sujan2025)'),
+    .regex(/^(?=.*[a-zA-Z])(?=.*[0-9])/, 'Username must contain both letters and numbers (e.g., roy2025)'),
   email: z.string().email('Please enter a valid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
   confirmPassword: z.string()
