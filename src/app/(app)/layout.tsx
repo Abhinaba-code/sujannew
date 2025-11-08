@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -33,6 +34,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     const hasUserDetails = user.data.name && user.data.name.trim() !== '';
     if (!hasUserDetails && pathname !== '/profile/edit') {
       router.push('/profile/edit');
+    } else if (hasUserDetails && (pathname === '/login' || pathname === '/signup' || pathname === '/')) {
+      router.push('/dashboard');
     }
   }, [user, isLoading, router, isClient, pathname]);
 
