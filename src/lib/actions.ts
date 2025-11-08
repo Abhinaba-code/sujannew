@@ -21,13 +21,14 @@ export async function generateFlashcardsAction(prevState: any, formData: FormDat
   }
   
   try {
-    const result = await generateFlashcardsFromTextFlow({ text: validatedFields.data.text, llmProvider: 'Gemini' });
+    const result = await generateFlashcardsFromTextFlow({ text: validatedFields.data.text });
     return {
         message: 'Success',
         errors: null,
         flashcards: result.flashcards,
     };
   } catch(e) {
+    console.error(e);
     return {
         message: 'An error occurred while generating flashcards.',
         errors: null,

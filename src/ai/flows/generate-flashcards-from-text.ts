@@ -14,7 +14,6 @@ const GenerateFlashcardsInputSchema = z.object({
   text: z
     .string()
     .describe('The text to generate flashcards from.'),
-  llmProvider: z.enum(['OpenAI', 'Llama', 'Gemini']).default('Gemini').describe('The LLM provider to use.'),
 });
 export type GenerateFlashcardsInput = z.infer<typeof GenerateFlashcardsInputSchema>;
 
