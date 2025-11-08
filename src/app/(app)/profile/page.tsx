@@ -82,7 +82,7 @@ export default function ProfilePage() {
     const handleDeleteAccount = () => {
         if (!user) return;
         deleteUser(user.username);
-        router.push('/signup');
+        router.push('/');
     };
 
     return (
