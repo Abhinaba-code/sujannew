@@ -35,6 +35,29 @@ const initialUserData: UserData = {
   timetable: [],
   materials: [],
   flashcardDecks: [],
+  notifications: [
+    {
+      id: 'notif-1',
+      title: 'Welcome to StudyMate Lite!',
+      description: 'Your new study dashboard is ready. Explore the features!',
+      createdAt: new Date().toISOString(),
+      read: false,
+    },
+    {
+      id: 'notif-2',
+      title: 'Profile Completion',
+      description: 'Don\'t forget to complete your profile to personalize your experience.',
+      createdAt: new Date(Date.now() - 1000 * 60 * 5).toISOString(), // 5 minutes ago
+      read: false,
+    },
+     {
+      id: 'notif-3',
+      title: 'AI Flashcards',
+      description: 'Try the new AI flashcard generator to boost your learning.',
+      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), // 2 hours ago
+      read: true,
+    }
+  ],
   stats: {
     studyHoursWeekly: {},
     tasksCompleted: 0,

@@ -44,6 +44,14 @@ export type FlashcardDeck = {
   cards: Flashcard[];
 };
 
+export type Notification = {
+  id: string;
+  title: string;
+  description: string;
+  createdAt: string;
+  read: boolean;
+};
+
 export type UserStats = {
   studyHoursWeekly: Record<string, number>;
   tasksCompleted: number;
@@ -67,6 +75,7 @@ export type UserData = {
   timetable: TimetableEntry[];
   materials: StudyMaterial[];
   flashcardDecks: FlashcardDeck[];
+  notifications: Notification[];
   stats: UserStats;
 };
 

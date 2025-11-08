@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -15,6 +16,8 @@ import {
   GraduationCap,
   X,
   Settings,
+  Trash2,
+  CheckCheck,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -25,6 +28,9 @@ import {
   TooltipContent,
 } from '@/components/ui/tooltip';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu';
+import { useAuth } from '@/hooks/use-auth';
+import type { Notification } from '@/lib/types';
+import { formatDistanceToNow } from 'date-fns';
 
 const navItems = [
   { href: '/dashboard', icon: Home, label: 'Dashboard' },
@@ -43,6 +49,21 @@ const secondaryNavItems = [
 
 export function AppSidebar({ isMobile = false, closeSheet }: { isMobile?: boolean, closeSheet?: () => void }) {
   const pathname = usePathname();
+  const { user, updateUserData } = useAuth();
+  const notifications = user?.data.notifications || [];
+  const unreadCount = notifications.filter(n => !n.read).length;
+
+  const handleMarkAllRead = () => {
+    if (!user) return;
+    const updatedNotifications = notifications.map(n => ({...n, read: true}));
+    updateUserData({ notifications: updatedNotifications });
+  }
+
+  const handleDeleteNotification = (id: string) => {
+    if(!user) return;
+    const updatedNotifications = notifications.filter(n => n.id !== id);
+    updateUserData({ notifications: updatedNotifications });
+  }
 
   return (
     <TooltipProvider>
@@ -141,19 +162,49 @@ export function AppSidebar({ isMobile = false, closeSheet }: { isMobile?: boolea
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <div className='flex items-center gap-4 cursor-pointer'>
-                    <Button variant="outline" size="icon" className='h-9 w-9'>
+                    <Button variant="outline" size="icon" className='h-9 w-9 relative'>
                         <Bell className="h-4 w-4" />
+                        {unreadCount > 0 && (
+                            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+                                {unreadCount}
+                            </span>
+                        )}
                         <span className="sr-only">Toggle notifications</span>
                     </Button>
                     <p className='text-sm text-muted-foreground'>Notifications</p>
                   </div>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+                <DropdownMenuContent align="end" className="w-80">
+                    <DropdownMenuLabel className="flex justify-between items-center">
+                        <span>Notifications</span>
+                        {notifications.length > 0 && (
+                            <Button variant="ghost" size="sm" onClick={handleMarkAllRead} disabled={unreadCount === 0}>
+                                <CheckCheck className="mr-2 h-4 w-4"/>
+                                Mark all as read
+                            </Button>
+                        )}
+                    </DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem className="flex justify-center text-muted-foreground">
-                        You have no new notifications.
-                    </DropdownMenuItem>
+                    <div className="max-h-80 overflow-y-auto">
+                    {notifications.length > 0 ? (
+                        notifications.map((notif: Notification) => (
+                            <DropdownMenuItem key={notif.id} className={cn("flex items-start gap-2 group", !notif.read && "bg-blue-500/10")}>
+                               <div className="flex-grow">
+                                  <p className="font-semibold">{notif.title}</p>
+                                  <p className="text-xs text-muted-foreground">{notif.description}</p>
+                                  <p className="text-xs text-muted-foreground mt-1">{formatDistanceToNow(new Date(notif.createdAt), { addSuffix: true })}</p>
+                               </div>
+                               <Button variant="ghost" size="icon" className="h-7 w-7 opacity-0 group-hover:opacity-100" onClick={(e) => { e.stopPropagation(); handleDeleteNotification(notif.id); }}>
+                                    <Trash2 className="h-4 w-4 text-destructive"/>
+                               </Button>
+                            </DropdownMenuItem>
+                        ))
+                    ) : (
+                        <DropdownMenuItem className="flex justify-center text-muted-foreground">
+                            You have no new notifications.
+                        </DropdownMenuItem>
+                    )}
+                    </div>
                 </DropdownMenuContent>
             </DropdownMenu>
           </div>
