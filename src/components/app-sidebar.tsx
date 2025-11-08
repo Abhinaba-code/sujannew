@@ -65,6 +65,12 @@ export function AppSidebar({ isMobile = false, closeSheet }: { isMobile?: boolea
     updateUserData({ notifications: updatedNotifications });
   }
 
+  const handleClearAllNotifications = () => {
+    if(!user) return;
+    updateUserData({ notifications: [] });
+  }
+
+
   return (
     <TooltipProvider>
       <div
@@ -88,6 +94,7 @@ export function AppSidebar({ isMobile = false, closeSheet }: { isMobile?: boolea
           </div>
           <div className="flex-1 overflow-auto py-2">
             <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
+              
               <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button className={cn('flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary hover:scale-105 hover:translate-x-1 w-full', isMobile && 'hover:scale-105 hover:translate-x-1')}>
@@ -106,10 +113,16 @@ export function AppSidebar({ isMobile = false, closeSheet }: { isMobile?: boolea
                       <DropdownMenuLabel className="flex justify-between items-center">
                           <span>Notifications</span>
                           {notifications.length > 0 && (
+                            <div className="flex items-center gap-1">
                               <Button variant="ghost" size="sm" onClick={handleMarkAllRead} disabled={unreadCount === 0}>
                                   <CheckCheck className="mr-2 h-4 w-4"/>
                                   Mark all as read
                               </Button>
+                               <Button variant="ghost" size="sm" onClick={handleClearAllNotifications} className="text-destructive hover:text-destructive">
+                                  <Trash2 className="mr-2 h-4 w-4"/>
+                                  Clear all
+                              </Button>
+                            </div>
                           )}
                       </DropdownMenuLabel>
                       <DropdownMenuSeparator />
