@@ -87,50 +87,100 @@ export function AppSidebar({ isMobile = false, closeSheet }: { isMobile?: boolea
             ) : null}
           </div>
           <div className="flex-1 overflow-auto py-2">
-            {isMobile ? (
-              <nav className="grid items-start px-4 text-sm font-medium">
-                {navItems.map(({ href, icon: Icon, label }) => {
-                  const isActive = pathname.startsWith(href);
-                  return (
-                    <Link
-                      key={href}
-                      href={href}
-                      onClick={closeSheet}
-                      className={cn(
-                        'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary hover:scale-105 hover:translate-x-1',
-                        { 'bg-muted text-primary': isActive }
+            <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
+              <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className={cn('flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary hover:scale-105 hover:translate-x-1 w-full', isMobile && 'hover:scale-105 hover:translate-x-1')}>
+                        <div className="relative">
+                            <Bell className="h-4 w-4" />
+                            {unreadCount > 0 && (
+                                <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+                                    {unreadCount}
+                                </span>
+                            )}
+                        </div>
+                        <span>Notifications</span>
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-80">
+                      <DropdownMenuLabel className="flex justify-between items-center">
+                          <span>Notifications</span>
+                          {notifications.length > 0 && (
+                              <Button variant="ghost" size="sm" onClick={handleMarkAllRead} disabled={unreadCount === 0}>
+                                  <CheckCheck className="mr-2 h-4 w-4"/>
+                                  Mark all as read
+                              </Button>
+                          )}
+                      </DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <div className="max-h-80 overflow-y-auto">
+                      {notifications.length > 0 ? (
+                          notifications.map((notif: Notification) => (
+                              <DropdownMenuItem key={notif.id} className={cn("flex items-start gap-2 group", !notif.read && "bg-blue-500/10")}>
+                                <div className="flex-grow">
+                                    <p className="font-semibold">{notif.title}</p>
+                                    <p className="text-xs text-muted-foreground">{notif.description}</p>
+                                    <p className="text-xs text-muted-foreground mt-1">{formatDistanceToNow(new Date(notif.createdAt), { addSuffix: true })}</p>
+                                </div>
+                                <Button variant="ghost" size="icon" className="h-7 w-7 opacity-0 group-hover:opacity-100" onClick={(e) => { e.stopPropagation(); handleDeleteNotification(notif.id); }}>
+                                      <Trash2 className="h-4 w-4 text-destructive"/>
+                                </Button>
+                              </DropdownMenuItem>
+                          ))
+                      ) : (
+                          <DropdownMenuItem className="flex justify-center text-muted-foreground">
+                              You have no new notifications.
+                          </DropdownMenuItem>
                       )}
-                    >
-                      <Icon className="h-4 w-4" />
-                      {label}
-                    </Link>
-                  );
-                })}
-              </nav>
-            ) : (
-                 <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-                    {navItems.map(({ href, icon: Icon, label }) => {
-                        const isActive = pathname.startsWith(href);
-                        return (
-                        <Tooltip key={href}>
-                            <TooltipTrigger asChild>
-                            <Link
-                                href={href}
-                                className={cn(
-                                'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary hover:scale-105 hover:translate-x-1',
-                                { 'bg-muted text-primary': isActive }
-                                )}
-                            >
-                                <Icon className="h-4 w-4" />
-                                <span>{label}</span>
-                            </Link>
-                            </TooltipTrigger>
-                            <TooltipContent side="right">{label}</TooltipContent>
-                        </Tooltip>
-                        );
-                    })}
-                    </nav>
-            )}
+                      </div>
+                  </DropdownMenuContent>
+              </DropdownMenu>
+
+              {isMobile ? (
+                  <>
+                  {navItems.map(({ href, icon: Icon, label }) => {
+                    const isActive = pathname.startsWith(href);
+                    return (
+                      <Link
+                        key={href}
+                        href={href}
+                        onClick={closeSheet}
+                        className={cn(
+                          'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary hover:scale-105 hover:translate-x-1',
+                          { 'bg-muted text-primary': isActive }
+                        )}
+                      >
+                        <Icon className="h-4 w-4" />
+                        {label}
+                      </Link>
+                    );
+                  })}
+                  </>
+              ) : (
+                   <>
+                      {navItems.map(({ href, icon: Icon, label }) => {
+                          const isActive = pathname.startsWith(href);
+                          return (
+                          <Tooltip key={href}>
+                              <TooltipTrigger asChild>
+                              <Link
+                                  href={href}
+                                  className={cn(
+                                  'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary hover:scale-105 hover:translate-x-1',
+                                  { 'bg-muted text-primary': isActive }
+                                  )}
+                              >
+                                  <Icon className="h-4 w-4" />
+                                  <span>{label}</span>
+                              </Link>
+                              </TooltipTrigger>
+                              <TooltipContent side="right">{label}</TooltipContent>
+                          </Tooltip>
+                          );
+                      })}
+                    </>
+              )}
+            </nav>
           </div>
           {secondaryNavItems.length > 0 && <div className="mt-auto border-t p-2">
              <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
@@ -158,56 +208,6 @@ export function AppSidebar({ isMobile = false, closeSheet }: { isMobile?: boolea
                 })}
              </nav>
           </div>}
-          <div className='p-4 border-t'>
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <div className='flex items-center gap-4 cursor-pointer'>
-                    <Button variant="outline" size="icon" className='h-9 w-9 relative'>
-                        <Bell className="h-4 w-4" />
-                        {unreadCount > 0 && (
-                            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">
-                                {unreadCount}
-                            </span>
-                        )}
-                        <span className="sr-only">Toggle notifications</span>
-                    </Button>
-                    <p className='text-sm text-muted-foreground'>Notifications</p>
-                  </div>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-80">
-                    <DropdownMenuLabel className="flex justify-between items-center">
-                        <span>Notifications</span>
-                        {notifications.length > 0 && (
-                            <Button variant="ghost" size="sm" onClick={handleMarkAllRead} disabled={unreadCount === 0}>
-                                <CheckCheck className="mr-2 h-4 w-4"/>
-                                Mark all as read
-                            </Button>
-                        )}
-                    </DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <div className="max-h-80 overflow-y-auto">
-                    {notifications.length > 0 ? (
-                        notifications.map((notif: Notification) => (
-                            <DropdownMenuItem key={notif.id} className={cn("flex items-start gap-2 group", !notif.read && "bg-blue-500/10")}>
-                               <div className="flex-grow">
-                                  <p className="font-semibold">{notif.title}</p>
-                                  <p className="text-xs text-muted-foreground">{notif.description}</p>
-                                  <p className="text-xs text-muted-foreground mt-1">{formatDistanceToNow(new Date(notif.createdAt), { addSuffix: true })}</p>
-                               </div>
-                               <Button variant="ghost" size="icon" className="h-7 w-7 opacity-0 group-hover:opacity-100" onClick={(e) => { e.stopPropagation(); handleDeleteNotification(notif.id); }}>
-                                    <Trash2 className="h-4 w-4 text-destructive"/>
-                               </Button>
-                            </DropdownMenuItem>
-                        ))
-                    ) : (
-                        <DropdownMenuItem className="flex justify-center text-muted-foreground">
-                            You have no new notifications.
-                        </DropdownMenuItem>
-                    )}
-                    </div>
-                </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
         </div>
       </div>
     </TooltipProvider>
