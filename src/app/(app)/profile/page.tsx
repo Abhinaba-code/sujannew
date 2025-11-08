@@ -51,9 +51,6 @@ export default function ProfilePage() {
         let timer: NodeJS.Timeout;
         if (deleteStep === 'countdown' && countdown > 0) {
             timer = setTimeout(() => setCountdown(countdown - 1), 1000);
-        } else if (deleteStep === 'countdown' && countdown === 0) {
-            // Automatically trigger delete after countdown
-            // handleDeleteAccount();
         }
         return () => clearTimeout(timer);
     }, [deleteStep, countdown]);
@@ -73,6 +70,7 @@ export default function ProfilePage() {
     const location = [data.city, data.state, data.country].filter(Boolean).join(', ');
     
     const handlePasswordConfirm = () => {
+        if (!user) return;
         const storedPassword = getUserPassword(user.username);
         if (passwordInput === storedPassword) {
             setPasswordError('');

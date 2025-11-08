@@ -200,7 +200,9 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     saveUsersToStorage(allUsers);
     
     setUser(null);
-    if (typeof window !== 'undefined') sessionStorage.removeItem('currentUser');
+    if (typeof window !== 'undefined') {
+        sessionStorage.removeItem('currentUser');
+    }
 
     toast({ variant: 'destructive', title: 'Account Deleted', description: 'Your account has been permanently removed.' });
   }, [toast]);
