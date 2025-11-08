@@ -48,12 +48,11 @@ export default function ProfilePage() {
     const [countdown, setCountdown] = useState(3);
 
     useEffect(() => {
+        let timer: NodeJS.Timeout;
         if (deleteStep === 'countdown' && countdown > 0) {
-            const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
-            return () => clearTimeout(timer);
-        } else if (deleteStep === 'countdown' && countdown === 0) {
-            // This logic is handled by the button's disabled state
+            timer = setTimeout(() => setCountdown(countdown - 1), 1000);
         }
+        return () => clearTimeout(timer);
     }, [deleteStep, countdown]);
 
     const resetDeleteFlow = () => {
@@ -156,7 +155,7 @@ export default function ProfilePage() {
                                 )}
                                 {deleteStep === 'countdown' && (
                                      <AlertDialogDescription>
-                                        Your account will be deleted permanently.
+                                        Your account will be deleted permanently. The final delete button will be enabled after the countdown.
                                     </AlertDialogDescription>
                                 )}
                             </AlertDialogHeader>
@@ -176,11 +175,11 @@ export default function ProfilePage() {
                             )}
 
                             {deleteStep === 'countdown' && (
-                                <div className="text-center text-lg font-mono">
+                                <div className="text-center text-lg font-mono p-4 bg-muted rounded-md">
                                     {countdown > 0 ? (
-                                        <p>Final deletion in: {countdown}</p>
+                                        <p>Final deletion in: <span className="font-bold text-primary">{countdown}</span></p>
                                     ) : (
-                                        <p className="text-green-500">You can now delete your account.</p>
+                                        <p className="font-semibold text-green-500">You can now proceed with deletion.</p>
                                     )}
                                 </div>
                             )}
@@ -199,7 +198,7 @@ export default function ProfilePage() {
                                 )}
                                 {deleteStep === 'countdown' && (
                                     <Button onClick={handleDeleteAccount} variant="destructive" disabled={countdown > 0}>
-                                        {countdown > 0 ? `Wait for ${countdown}s` : "Permanently Delete"}
+                                        {countdown > 0 ? `Please wait...` : "Permanently Delete"}
                                     </Button>
                                 )}
                             </AlertDialogFooter>
