@@ -2,6 +2,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Mail, Heart } from 'lucide-react';
+import Link from 'next/link';
 
 export default function ContactPage() {
   return (
@@ -15,20 +16,19 @@ export default function ContactPage() {
             </CardHeader>
             <CardContent>
                 <p className="mb-6">
-                    This is a demo application, so direct support is not available. However, we appreciate you exploring StudyMate Lite!
+                    You can reach out for support via email.
                 </p>
-                <Button variant="outline" disabled>
-                    <Mail className="mr-2 h-4 w-4" /> Email Support
+                <Button asChild variant="outline">
+                    <Link href="mailto:roysneha4569@gmail.com">
+                        <Mail className="mr-2 h-4 w-4" /> Email Support
+                    </Link>
                 </Button>
             </CardContent>
             <CardFooter className="bg-muted/50 p-6 justify-center">
                 <p className="text-muted-foreground text-center">
-                    Made with <Heart className="inline-block h-5 w-5 text-red-500 animate-pulse" /> by <br className="sm:hidden" />
+                    Developed By <br className="sm:hidden" />
                     <span className="font-semibold text-lg bg-gradient-to-r from-primary via-accent to-secondary-foreground bg-clip-text text-transparent transition-all duration-300 hover:tracking-wider">
-                        Developer - Abhinaba Roy Pradhan
-                    </span> & 
-                    <span className="font-semibold text-lg bg-gradient-to-r from-secondary-foreground via-accent to-primary bg-clip-text text-transparent transition-all duration-300 hover:tracking-wider">
-                        WBP Constable - Sujan Roy
+                        Sneha Roy
                     </span>
                 </p>
             </CardFooter>
