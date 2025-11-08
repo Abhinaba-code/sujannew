@@ -19,7 +19,7 @@ const profileFormSchema = z.object({
   city: z.string().min(1, 'City is required'),
   state: z.string().min(1, 'State is required'),
   country: z.string().min(1, 'Country is required'),
-  age: z.coerce.number({invalid_type_error: "Age must be a number"}).min(1, "Age must be between 1 and 75").max(75, "Age must be between 1 and 75"),
+  age: z.coerce.number({invalid_type_error: "Age must be a number"}).min(1, "Age must be a numer between 1 to 75").max(75, "Age must be a numer between 1 to 75"),
   studyClass: z.string().min(1, 'Class/Grade is required'),
   favoriteSubject: z.string().min(1, 'Favorite subject is required'),
   hobby: z.string().min(1, 'Hobby is required'),
@@ -185,7 +185,7 @@ export default function EditProfilePage() {
                                 <FormItem>
                                 <FormLabel>Favorite Subject</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="e.g. Physics" {...field} />
+                                    <Input placeholder="e.g. History, Geography" {...field} />
                                 </FormControl>
                                 <FormMessage />
                                 </FormItem>
@@ -198,7 +198,7 @@ export default function EditProfilePage() {
                                 <FormItem>
                                 <FormLabel>Hobby</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="e.g. Reading, coding" {...field} />
+                                    <Input placeholder="e.g. Reading, Music, Dance" {...field} />
                                 </FormControl>
                                 <FormMessage />
                                 </FormItem>
@@ -212,7 +212,7 @@ export default function EditProfilePage() {
                                 <FormItem>
                                 <FormLabel>What do you want to be in the future?</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="e.g. Software Engineer, Doctor" {...field} />
+                                    <Input placeholder="e.g. Doctor, Engineer, IAS Officer, Minister, Political Leader" {...field} />
                                 </FormControl>
                                 <FormMessage />
                                 </FormItem>
