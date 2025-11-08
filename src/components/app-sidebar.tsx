@@ -109,22 +109,8 @@ export function AppSidebar({ isMobile = false, closeSheet }: { isMobile?: boolea
                         <span>Notifications</span>
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-80">
-                      <DropdownMenuLabel className="flex justify-between items-center">
-                          <span>Notifications</span>
-                          {notifications.length > 0 && (
-                            <div className="flex items-center gap-1">
-                              <Button variant="ghost" size="sm" onClick={handleMarkAllRead} disabled={unreadCount === 0}>
-                                  <CheckCheck className="mr-2 h-4 w-4"/>
-                                  Mark all as read
-                              </Button>
-                               <Button variant="ghost" size="sm" onClick={handleClearAllNotifications} className="text-destructive hover:text-destructive">
-                                  <Trash2 className="mr-2 h-4 w-4"/>
-                                  Clear all
-                              </Button>
-                            </div>
-                          )}
-                      </DropdownMenuLabel>
+                  <DropdownMenuContent align="end" className="w-80 md:w-96">
+                      <DropdownMenuLabel>Notifications</DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <div className="max-h-80 overflow-y-auto">
                       {notifications.length > 0 ? (
@@ -141,11 +127,26 @@ export function AppSidebar({ isMobile = false, closeSheet }: { isMobile?: boolea
                               </DropdownMenuItem>
                           ))
                       ) : (
-                          <DropdownMenuItem className="flex justify-center text-muted-foreground">
+                          <div className="flex justify-center text-muted-foreground p-4 text-sm">
                               You have no new notifications.
-                          </DropdownMenuItem>
+                          </div>
                       )}
                       </div>
+                      {notifications.length > 0 && (
+                          <>
+                            <DropdownMenuSeparator />
+                            <div className="flex flex-col sm:flex-row justify-end gap-1 p-1">
+                                <Button variant="ghost" size="sm" onClick={handleMarkAllRead} disabled={unreadCount === 0} className="w-full justify-start sm:w-auto">
+                                  <CheckCheck className="mr-2 h-4 w-4"/>
+                                  Mark all as read
+                                </Button>
+                               <Button variant="ghost" size="sm" onClick={handleClearAllNotifications} className="text-destructive hover:text-destructive w-full justify-start sm:w-auto">
+                                  <Trash2 className="mr-2 h-4 w-4"/>
+                                  Clear all
+                              </Button>
+                            </div>
+                          </>
+                      )}
                   </DropdownMenuContent>
               </DropdownMenu>
 
