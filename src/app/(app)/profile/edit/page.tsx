@@ -19,7 +19,7 @@ const profileFormSchema = z.object({
   city: z.string().min(1, 'City is required'),
   state: z.string().min(1, 'State is required'),
   country: z.string().min(1, 'Country is required'),
-  age: z.string().min(1, 'Age is required'),
+  age: z.coerce.number({invalid_type_error: "Age must be a number"}).min(1, "Age must be at least 1").max(75, "Age must be 75 or less"),
   studyClass: z.string().min(1, 'Class/Grade is required'),
   favoriteSubject: z.string().min(1, 'Favorite subject is required'),
   hobby: z.string().min(1, 'Hobby is required'),
@@ -44,7 +44,7 @@ export default function EditProfilePage() {
       city: user?.data.city || '',
       state: user?.data.state || '',
       country: user?.data.country || '',
-      age: user?.data.age || '',
+      age: user?.data.age ? Number(user.data.age) : undefined,
       studyClass: user?.data.studyClass || '',
       favoriteSubject: user?.data.favoriteSubject || '',
       hobby: user?.data.hobby || '',
@@ -56,7 +56,7 @@ export default function EditProfilePage() {
 
   function onSubmit(data: ProfileFormValues) {
     if (!user) return;
-    updateUserData(data);
+    updateUserData({...data, age: String(data.age)});
     toast({
       title: isInitialSetup ? "Profile Created!" : "Profile Updated",
       description: isInitialSetup 
@@ -102,7 +102,7 @@ export default function EditProfilePage() {
                                 <FormItem>
                                 <FormLabel>Age</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="e.g. 18" {...field} />
+                                    <Input type="number" placeholder="e.g. 18" {...field} onChange={e => field.onChange(e.target.value === '' ? '' : Number(e.target.value))} />
                                 </FormControl>
                                 <FormMessage />
                                 </FormItem>
