@@ -51,6 +51,8 @@ export default function ProfilePage() {
         let timer: NodeJS.Timeout;
         if (deleteStep === 'countdown' && countdown > 0) {
             timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+        } else if (deleteStep === 'countdown' && countdown === 0) {
+            // Can add logic here if needed when countdown finishes
         }
         return () => clearTimeout(timer);
     }, [deleteStep, countdown]);
@@ -63,6 +65,8 @@ export default function ProfilePage() {
     };
 
     if (!user) {
+        // This can happen briefly after deletion and before redirect.
+        // Or if the user lands here without being logged in.
         return <div>Loading...</div>;
     }
 
