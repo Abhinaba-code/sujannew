@@ -15,7 +15,7 @@ import { Textarea } from '@/components/ui/textarea';
 
 const profileFormSchema = z.object({
   name: z.string().min(1, 'Name is required').max(50, 'Name must be 50 characters or less').regex(/^[a-zA-Z\s'-]+$/, 'Full name cannot contain numbers or special characters.'),
-  phone: z.string().min(1, 'Phone number is required'),
+  phone: z.string().regex(/^\d{10}$/, 'Phone number must be exactly 10 digits'),
   city: z.string().min(1, 'City is required'),
   state: z.string().min(1, 'State is required'),
   country: z.string().min(1, 'Country is required'),
