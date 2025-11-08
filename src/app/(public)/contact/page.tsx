@@ -26,14 +26,16 @@ export default function ContactPage() {
             </CardContent>
             <CardFooter className="bg-muted/50 p-6 justify-center">
                 <div className="text-muted-foreground text-center">
-                    <p>
+                    <p className="font-medium">
                         Developed By <br className="sm:hidden" />
                         <span className="font-semibold text-lg bg-gradient-to-r from-primary via-accent to-secondary-foreground bg-clip-text text-transparent transition-all duration-300 hover:tracking-wider">
                             Sneha Roy
                         </span>
                     </p>
                     <Link href="mailto:roysneha4569@gmail.com" className="text-sm hover:underline">
-                        roysneha4569@gmail.com
+                        <span className="font-semibold bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent transition-all duration-300 hover:tracking-wider">
+                            Contact - roysneha4569@gmail.com
+                        </span>
                     </Link>
                 </div>
             </CardFooter>

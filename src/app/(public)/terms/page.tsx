@@ -34,7 +34,7 @@ export default function TermsPage() {
 
           <h3>4. Disclaimer of Warranty</h3>
           <p>
-            The Service is provided on an "AS IS" and "AS AVAILABLE" basis. The Service is provided without warranties of any kind, whether express or implied, including, but not limited to, implied warranties of merchantability, fitness for a particular purpose, or non-infringement.
+            The Service is provided on an "AS IS" and "AS AVAILABLE" basis. The Service is provided without warranties of any kind, whether express or implied, including, but not to, implied warranties of merchantability, fitness for a particular purpose, or non-infringement.
           </p>
 
           <h3>5. Limitation of Liability</h3>
@@ -49,14 +49,16 @@ export default function TermsPage() {
         </CardContent>
         <CardFooter className="bg-muted/50 p-6 justify-center">
             <div className="text-muted-foreground text-center">
-                <p>
+                <p className="font-medium">
                     Developed By <br className="sm:hidden" />
                     <span className="font-semibold text-lg bg-gradient-to-r from-primary via-accent to-secondary-foreground bg-clip-text text-transparent transition-all duration-300 hover:tracking-wider">
                         Sneha Roy
                     </span>
                 </p>
                 <Link href="mailto:roysneha4569@gmail.com" className="text-sm hover:underline">
-                    roysneha4569@gmail.com
+                    <span className="font-semibold bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent transition-all duration-300 hover:tracking-wider">
+                        Contact - roysneha4569@gmail.com
+                    </span>
                 </Link>
             </div>
         </CardFooter>
