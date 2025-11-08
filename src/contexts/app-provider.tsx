@@ -55,6 +55,20 @@ const initialUserData: UserData = {
       title: 'AI Flashcards',
       description: 'Try the new AI flashcard generator to boost your learning.',
       createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), // 2 hours ago
+      read: false,
+    },
+    {
+      id: 'notif-4',
+      title: 'New Feature: Quizzes!',
+      description: 'Test your knowledge with the new quiz feature. Try it now!',
+      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), // 1 day ago
+      read: true,
+    },
+    {
+      id: 'notif-5',
+      title: 'Plan Your Week',
+      description: 'Set up your weekly schedule in the Timetable section to stay organized.',
+      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(), // 2 days ago
       read: true,
     }
   ],
