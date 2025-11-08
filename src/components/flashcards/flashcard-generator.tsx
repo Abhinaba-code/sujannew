@@ -1,6 +1,7 @@
+
 'use client';
 
-import { useActionState, useState } from 'react';
+import { useActionState, useState, useRef, useEffect } from 'react';
 import { useFormStatus } from 'react-dom';
 import { generateFlashcardsAction } from '@/lib/actions';
 import { Button } from '@/components/ui/button';
@@ -41,6 +42,13 @@ export function FlashcardGenerator() {
   const { user, updateUserData } = useAuth();
   const [deckName, setDeckName] = useState('');
   const { toast } = useToast();
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    if (state.message === 'Success' && state.flashcards && state.flashcards.length > 0) {
+      formRef.current?.reset();
+    }
+  }, [state]);
 
   const handleSaveDeck = () => {
     if (!deckName.trim()) {
@@ -70,7 +78,7 @@ export function FlashcardGenerator() {
           <CardTitle>AI Flashcard Generator</CardTitle>
           <CardDescription>Paste any text below, and AI will create flashcards for you.</CardDescription>
         </CardHeader>
-        <form action={formAction}>
+        <form ref={formRef} action={formAction}>
           <CardContent>
             <Textarea
               name="text"
