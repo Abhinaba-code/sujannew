@@ -19,7 +19,7 @@ const profileFormSchema = z.object({
   city: z.string().min(1, 'City is required'),
   state: z.string().min(1, 'State is required'),
   country: z.string().min(1, 'Country is required'),
-  age: z.coerce.number({invalid_type_error: "Age must be a number"}).min(1, "Age must be at least 1").max(75, "Age must be 75 or less"),
+  age: z.coerce.number({invalid_type_error: "Age must be a number"}).min(1, "Age must be between 1 and 75").max(75, "Age must be between 1 and 75"),
   studyClass: z.string().min(1, 'Class/Grade is required'),
   favoriteSubject: z.string().min(1, 'Favorite subject is required'),
   hobby: z.string().min(1, 'Hobby is required'),
@@ -41,9 +41,9 @@ export default function EditProfilePage() {
     defaultValues: {
       name: user?.data.name || '',
       phone: user?.data.phone || '',
-      city: user?.data.city || '',
-      state: user?.data.state || '',
-      country: user?.data.country || '',
+      city: user?.data.city || 'Kolkata',
+      state: user?.data.state || 'West Bengal',
+      country: user?.data.country || 'India',
       age: user?.data.age ? Number(user.data.age) : ('' as any),
       studyClass: user?.data.studyClass || '',
       favoriteSubject: user?.data.favoriteSubject || '',
@@ -102,7 +102,7 @@ export default function EditProfilePage() {
                                 <FormItem>
                                 <FormLabel>Age</FormLabel>
                                 <FormControl>
-                                    <Input type="number" placeholder="e.g. 18" {...field} onChange={e => field.onChange(e.target.value === '' ? '' : Number(e.target.value))} />
+                                    <Input type="number" placeholder="e.g. 18" {...field} value={field.value ?? ''} onChange={e => field.onChange(e.target.value === '' ? '' : Number(e.target.value))} />
                                 </FormControl>
                                 <FormMessage />
                                 </FormItem>
@@ -144,7 +144,7 @@ export default function EditProfilePage() {
                                 <FormItem>
                                 <FormLabel>City</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="e.g. San Francisco" {...field} />
+                                    <Input placeholder="e.g. Kolkata" {...field} />
                                 </FormControl>
                                 <FormMessage />
                                 </FormItem>
@@ -157,7 +157,7 @@ export default function EditProfilePage() {
                                 <FormItem>
                                 <FormLabel>State / Province</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="e.g. California" {...field} />
+                                    <Input placeholder="e.g. West Bengal" {...field} />
                                 </FormControl>
                                 <FormMessage />
                                 </FormItem>
@@ -170,7 +170,7 @@ export default function EditProfilePage() {
                                 <FormItem>
                                 <FormLabel>Country</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="e.g. USA" {...field} />
+                                    <Input placeholder="e.g. India" {...field} />
                                 </FormControl>
                                 <FormMessage />
                                 </FormItem>
