@@ -86,6 +86,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
   const getUsersFromStorage = (): Record<string, User> => {
     try {
+      if (typeof window === 'undefined') return {};
       const usersRaw = localStorage.getItem('users');
       return usersRaw ? JSON.parse(usersRaw) : {};
     } catch (e) {
@@ -99,11 +100,13 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const saveUsersToStorage = (users: Record<string, User>) => {
+    if (typeof window === 'undefined') return;
     localStorage.setItem('users', JSON.stringify(users));
   };
 
   useEffect(() => {
     try {
+      if (typeof window === 'undefined') return;
       const loggedInUserEmail = sessionStorage.getItem('currentUser');
       if (loggedInUserEmail) {
         const allUsers = getUsersFromStorage();
@@ -129,7 +132,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       const [username, userData] = foundUserEntry;
       const userToLogin: User = { username, ...userData };
       setUser(userToLogin);
-      sessionStorage.setItem('currentUser', userToLogin.email);
+      if (typeof window !== 'undefined') sessionStorage.setItem('currentUser', userToLogin.email);
       toast({ title: 'Login successful', description: `Welcome back, ${userToLogin.data.name || userToLogin.username}!` });
       return true;
     }
@@ -158,7 +161,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     saveUsersToStorage(allUsers);
     
     setUser(newUser);
-    sessionStorage.setItem('currentUser', newUser.email);
+    if (typeof window !== 'undefined') sessionStorage.setItem('currentUser', newUser.email);
 
     toast({ title: 'Signup successful!', description: 'Welcome! Please complete your profile.' });
     return true;
@@ -166,7 +169,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = useCallback(() => {
     setUser(null);
-    sessionStorage.removeItem('currentUser');
+    if (typeof window !== 'undefined') sessionStorage.removeItem('currentUser');
     toast({ title: 'Logged out' });
   }, [toast]);
   
@@ -195,9 +198,10 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     const allUsers = getUsersFromStorage();
     delete allUsers[username];
     saveUsersToStorage(allUsers);
-
+    
     setUser(null);
-    sessionStorage.removeItem('currentUser');
+    if (typeof window !== 'undefined') sessionStorage.removeItem('currentUser');
+
     toast({ variant: 'destructive', title: 'Account Deleted', description: 'Your account has been permanently removed.' });
   }, [toast]);
 
