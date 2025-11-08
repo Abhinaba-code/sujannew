@@ -41,9 +41,9 @@ export default function EditProfilePage() {
     defaultValues: {
       name: user?.data.name || '',
       phone: user?.data.phone || '',
-      city: user?.data.city || 'Kolkata',
-      state: user?.data.state || 'West Bengal',
-      country: user?.data.country || 'India',
+      city: user?.data.city || '',
+      state: user?.data.state || '',
+      country: user?.data.country || '',
       age: user?.data.age ? Number(user.data.age) : ('' as any),
       studyClass: user?.data.studyClass || '',
       favoriteSubject: user?.data.favoriteSubject || '',
