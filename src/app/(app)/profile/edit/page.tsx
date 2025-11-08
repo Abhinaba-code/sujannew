@@ -44,7 +44,7 @@ export default function EditProfilePage() {
       city: user?.data.city || '',
       state: user?.data.state || '',
       country: user?.data.country || '',
-      age: user?.data.age ? Number(user.data.age) : undefined,
+      age: user?.data.age ? Number(user.data.age) : ('' as any),
       studyClass: user?.data.studyClass || '',
       favoriteSubject: user?.data.favoriteSubject || '',
       hobby: user?.data.hobby || '',
