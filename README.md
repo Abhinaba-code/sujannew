@@ -81,5 +81,5 @@ This application is designed with privacy as a core principle. **All your user d
 
 ## ✒️ Credits
 
-This application was developed by **Sneha Roy**.
-- **Contact**: roysneha4569@gmail.com
+This application was developed by **Abhinaba Roy Pradhan**.
+- **Contact**: abhinabapradhan@gmail.com

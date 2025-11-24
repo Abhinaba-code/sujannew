@@ -167,6 +167,6 @@ Test your knowledge with trivia questions from a public API.
 
 ## 6. Credits
 
-This application was proudly developed by **Sneha Roy**.
+This application was proudly developed by **Abhinaba Roy Pradhan**.
 
-- **Contact**: roysneha4569@gmail.com
+- **Contact**: abhinabapradhan@gmail.com

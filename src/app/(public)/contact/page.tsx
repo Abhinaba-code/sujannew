@@ -19,7 +19,7 @@ export default function ContactPage() {
                     You can reach out for support via email.
                 </p>
                 <Button asChild variant="outline">
-                    <Link href="mailto:roysneha4569@gmail.com">
+                    <Link href="mailto:abhinabapradhan@gmail.com">
                         <Mail className="mr-2 h-4 w-4" /> Email Support
                     </Link>
                 </Button>
@@ -29,12 +29,12 @@ export default function ContactPage() {
                     <p className="font-medium">
                         Developed By <br className="sm:hidden" />
                         <span className="font-semibold text-lg bg-gradient-to-r from-primary via-accent to-secondary-foreground bg-clip-text text-transparent transition-all duration-300 hover:tracking-wider">
-                            Sneha Roy
+                            Abhinaba Roy Pradhan
                         </span>
                     </p>
-                    <Link href="mailto:roysneha4569@gmail.com" className="text-sm hover:underline">
+                    <Link href="mailto:abhinabapradhan@gmail.com" className="text-sm hover:underline">
                         <span className="font-semibold bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent transition-all duration-300 hover:tracking-wider">
-                            Contact - roysneha4569@gmail.com
+                            Contact - abhinabapradhan@gmail.com
                         </span>
                     </Link>
                 </div>
